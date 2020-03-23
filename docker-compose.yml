@@ -1,0 +1,38 @@
+version: '3.2'
+
+services:
+
+  frontend:
+    build: frontend
+    ports:
+      - 20080:80
+    volumes:
+      # Re-use local composer cache via host-volume
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      # Mount source-code for development
+      - ./:/app
+
+  backend:
+    build: backend
+    ports:
+      - 21080:80
+    volumes:
+      # Re-use local composer cache via host-volume
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      # Mount source-code for development
+      - ./:/app
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=aup_uci
+      - MYSQL_DATABASE=aup_uci_manager
+      - MYSQL_USER=aup_uci
+      - MYSQL_PASSWORD=aup_uci_manager_password_for_system
+
+  #pgsql:
+  #  image: postgres:9.5
+  #  environment:
+  #    - POSTGRES_DB=yii2advanced
+  #    - POSTGRES_USER=yii2advanced
+  #    - POSTGRES_PASSWORD=secret
