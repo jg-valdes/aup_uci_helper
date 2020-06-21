@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\settings\Setting;
-use common\controllers\BaseController;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\models\GlobalFunctions;
@@ -12,7 +12,7 @@ use common\models\GlobalFunctions;
 /**
  * SettingController implements the CRUD actions for Setting model.
  */
-class SettingController extends BaseController
+class SettingController extends Controller
 {
     /**
      * @inheritdoc
@@ -20,9 +20,6 @@ class SettingController extends BaseController
     public function behaviors()
     {
         return [
-            'ghost-access'=> [
-                'class' => 'webvimark\modules\UserManagement\components\GhostAccessControl',
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -41,9 +38,6 @@ class SettingController extends BaseController
      */
     public function actionUpdate($id)
     {
-        $this->layout = "main-clean";
-
-
         $model = $this->findModel($id);
 
         if(isset($model) && !empty($model))
@@ -62,7 +56,6 @@ class SettingController extends BaseController
 	            $main_logo = $model->uploadImage('file_main_logo',1);
 	            $header_logo = $model->uploadImage('file_header_logo',2);
 	            $mini_header_logo = $model->uploadImage('file_mini_header_logo',3);
-
 
 	            // revert back if no valid file instance uploaded
 	            if ($main_logo === false) {
@@ -86,7 +79,12 @@ class SettingController extends BaseController
 	                {
 		                if(file_exists($old_file_main_logo))
 		                {
-			                unlink($old_file_main_logo);
+                            try{
+                                unlink($old_file_main_logo);
+                            }catch (\Exception $exception){
+                                Yii::info("Error deleting image on Setting: " . $old_file_main_logo);
+                                Yii::info($exception->getMessage());
+                            }
 		                }
 
 		                $path = $model->getImageFile(1);
@@ -99,7 +97,12 @@ class SettingController extends BaseController
                     {
                         if(file_exists($old_file_header_logo))
                         {
-                            unlink($old_file_header_logo);
+                            try{
+                                unlink($old_file_header_logo);
+                            }catch (\Exception $exception){
+                                Yii::info("Error deleting image on Setting: " . $old_file_header_logo);
+                                Yii::info($exception->getMessage());
+                            }
                         }
 
                         $path = $model->getImageFile(2);
@@ -112,26 +115,31 @@ class SettingController extends BaseController
                     {
                         if(file_exists($old_file_mini_header_logo))
                         {
-                            unlink($old_file_mini_header_logo);
+                            try{
+                                unlink($old_file_mini_header_logo);
+                            }catch (\Exception $exception){
+                                Yii::info("Error deleting image on Setting: " . $old_file_mini_header_logo);
+                                Yii::info($exception->getMessage());
+                            }
                         }
 
                         $path = $model->getImageFile(3);
                         $mini_header_logo->saveAs($path);
                     }
 
-                    GlobalFunctions::setFlashMessage('success','Ajustes actualizados correctamente');
+                    GlobalFunctions::setFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
 
                     return $this->redirect(['update','id'=>$id]);
                 }
                 else
                 {
-                    GlobalFunctions::setFlashMessage('danger','Error actualizando los ajustes');
+                    GlobalFunctions::setFlashMessage('danger',Yii::t('backend','Error actualizando el elemento'));
                 }
             }
         }
         else
         {
-            GlobalFunctions::setFlashMessage('warning','El elemento buscado no existe');
+            GlobalFunctions::setFlashMessage('warning',Yii::t('backend','El elemento buscado no existe'));
         }
 
         return $this->render('update', [
@@ -152,7 +160,7 @@ class SettingController extends BaseController
         if (($model = Setting::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('La página solicitada no existe');
+            throw new NotFoundHttpException(Yii::t('backend','La página solicitada no existe'));
         }
     }
 }

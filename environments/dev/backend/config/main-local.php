@@ -5,7 +5,6 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '',
-            //'csrfCookie' => ['httpOnly' => true, 'path' => '/admin/', 'secure' => true],
         ],
         'view' => [
             'theme' => [
@@ -14,32 +13,10 @@ $config = [
                 ],
             ],
         ],
-        'urlManager' => [
-            'class' => 'yii\web\UrlManager',
-            'baseUrl'=>'http://aup-manager.uci.cu.local/admin',
-//             Disable index.php
-            'showScriptName' => false,
-            // Disable r= routes
-            'enablePrettyUrl' => true,
-            //'suffix' => '.html',
-            'enableStrictParsing' => false,
-            'rules' => array(
-                '' => 'site/index',
-                '<action>'=>'site/<action>',
-                '<controller:\w+>/<id:\d+>' => '<controller>/view',
-                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-            ),
-        ],
-
-        'urlManagerFrontend' => [
-            'class' => 'yii\web\urlManager',
-            'baseUrl' => '/',
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-        ],
     ],
 ];
+
+$config['components']['urlManager']['baseUrl'] = "http://aup-helper.uci.cu.local";
 
 if (!YII_ENV_TEST) {
     // configuration adjustments for 'dev' environment
@@ -48,9 +25,30 @@ if (!YII_ENV_TEST) {
         'class' => 'yii\debug\Module',
     ];
 
-    $config['bootstrap'][] = 'gii';
+//    $config['bootstrap'][] = 'gii';
+//    $config['modules']['gii'] = [
+//        'class' => 'yii\gii\Module',
+//    ];
+}
+
+if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
+        'allowedIPs' => ['127.0.0.1', '::1'],
+        'generators' => [ //here
+            'crud' => [
+                'class' => 'yii\gii\generators\crud\Generator',
+                'templates' => [
+                    'custom_adminlte' => '@backend/components/custom_gii/templates/crud/simple',
+                ]
+            ],
+            'model' => [
+                'class' => 'yii\gii\generators\model\Generator',
+                'templates' => [
+                    'custom_model_adminlte' => '@backend/components/custom_gii/templates/model/simple',
+                ]
+            ],
+        ],
     ];
 }
 

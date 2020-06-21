@@ -2,7 +2,9 @@
 
 namespace backend\components;
 
+use mdm\admin\components\Helper;
 use Yii;
+use kartik\grid\GridView;
 use yii\helpers\Html;
 
 class Custom_Settings_Column_GridView
@@ -17,10 +19,20 @@ class Custom_Settings_Column_GridView
 
     /**
      * Custom_Settings_Column_GridView constructor.
-
      */
-    public function __construct($create_button, $dataProvider)
+    public function __construct($header_buttons, $dataProvider, $template = null, $custom_buttons = null)
     {
+        if (Helper::checkRoute(Yii::$app->controller->id.'/delete'))
+        {
+            $btn_multiple_delete = Html::button('<i class="fa fa-check-square-o"></i> <i class="fa fa-trash"></i> '.Yii::t('backend','Eliminar') ,['id'=> 'actionDeleteMultiple','class'=>'btn btn-danger btn-flat margin','title'=> Yii::t('backend','Eliminar seleccionados'), 'data-toggle' => 'tooltip']);
+            $visible_check_box_column = true;
+        }
+        else
+        {
+            $btn_multiple_delete = '';
+            $visible_check_box_column = false;
+        }
+
         $serial_column = [
             'class' => 'kartik\grid\SerialColumn',
             'contentOptions' => ['class' => 'kartik-sheet-style'],
@@ -32,6 +44,7 @@ class Custom_Settings_Column_GridView
         $checkbox_column = [
             'class' => 'kartik\grid\CheckboxColumn',
             'headerOptions' => ['class' => 'kartik-sheet-style'],
+            //'rowSelectedClass' => GridView::TYPE_SUCCESS,
         ];
 
         $action_column = [
@@ -40,7 +53,8 @@ class Custom_Settings_Column_GridView
             'vAlign'=>'middle',
             'dropdownOptions' => ['class' => 'float-right'],
             'headerOptions' => ['class' => 'kartik-sheet-style'],
-            'template' => ['view', 'update', 'delete'],
+            'template' => ($template !== null)? Helper::filterActionColumn($template) : Helper::filterActionColumn(['view', 'update', 'delete']),
+            'buttons' => ($custom_buttons !== null)? $custom_buttons : [],
             'viewOptions' => [
                 'class' => 'btn btn-xs btn-default btn-flat',
                 'title' => Yii::t('yii','View'),
@@ -55,13 +69,13 @@ class Custom_Settings_Column_GridView
                 'class' => 'btn btn-xs btn-danger btn-flat',
                 'title' => Yii::t('yii','Delete'),
                 'data-toggle' => 'tooltip',
-                'data-confirm' =>  '¿Seguro desea eliminar este elemento?',
+                'data-confirm' => Yii::t('backend', '¿Seguro desea eliminar este elemento?'),
             ],
         ];
 
         $togle_data_options = [
             'minCount' => 20,
-            'confirmMsg' => 'Existen {totalCount} registros. ¿Seguro desea mostrarlos todos?',['totalCount' => number_format($dataProvider->getTotalCount())],
+            'confirmMsg' => Yii::t('backend','Existen {totalCount} registros. ¿Seguro desea mostrarlos todos?',['totalCount' => number_format($dataProvider->getTotalCount())]),
             'all' => [
                 'class' => 'btn btn-default btn-flat margin',
                 'data-toggle' => 'tooltip',
@@ -75,16 +89,15 @@ class Custom_Settings_Column_GridView
         $panel = [
             'type' => 'default',
             'after'=>
-                Html::a('<i class="fa fa-refresh"></i> Resetear', ['index'], ['class' => 'btn btn-default btn-flat margin','title'=> 'Resetear listado', 'data-toggle' => 'tooltip']).''.
-                Html::button('<i class="fa fa-check-square-o"></i> <i class="fa fa-trash"></i> Eliminar' ,['id'=> 'actionDeleteMultiple','class'=>'btn btn-danger btn-flat margin','title'=> 'Eliminar seleccionados', 'data-toggle' => 'tooltip']),
+                Html::a('<i class="fa fa-refresh"></i> '.Yii::t('backend','Resetear'), ['index'], ['class' => 'btn btn-default btn-flat margin','title'=> Yii::t('backend','Resetear listado'), 'data-toggle' => 'tooltip']).''.$btn_multiple_delete,
             'before' => '',
         ];
 
         $toolbar = [
             [
                 'content' =>
-                    $create_button . ' '.
-                    Html::a('<i class="fa fa-refresh"></i> Resetear', ['index'], ['class' => 'btn btn-default btn-flat margin','title'=> 'Resetear listado', 'data-toggle' => 'tooltip']),
+                    $header_buttons . ' '.
+                    Html::a('<i class="fa fa-refresh"></i> '.Yii::t('backend','Resetear'), ['index'], ['class' => 'btn btn-default btn-flat margin','title'=> Yii::t('backend','Resetear listado'), 'data-toggle' => 'tooltip']),
             ],
             //'{export}',
             '{toggleData}',

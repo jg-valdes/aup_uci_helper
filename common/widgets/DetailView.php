@@ -9,21 +9,7 @@
 
 namespace common\widgets;
 
-//use Closure;
-//use kartik\base\BootstrapInterface;
-//use kartik\base\Config;
-//use kartik\base\TranslationTrait;
-//use kartik\base\WidgetTrait;
-//use kartik\base\PluginAssetBundle;
-//use kartik\dialog\Dialog;
-//use Yii;
-//use yii\base\Arrayable;
-//use yii\base\InvalidConfigException;
-//use yii\base\Model;
-//use yii\helpers\ArrayHelper;
-//use yii\helpers\Html;
-//use yii\helpers\Inflector;
-//use yii\widgets\ActiveForm;
+
 use kartik\detail\DetailView as YiiDetailView;
 
 /**

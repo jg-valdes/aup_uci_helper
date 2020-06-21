@@ -1,56 +1,54 @@
 {
-    "name": "uci/aup_uci_manager",
-    "description": "AUP UCI Manager",
-    "keywords": ["yii2", "framework", "UCI", "AUP-UCI"],
-    "homepage": "http://www.aup-manager.uci.cu/",
+    "name": "ecruzp/aup_uci_helper",
+    "description": "Yii 2 App for AUPvUCI Predict Scenario",
+    "keywords": ["UCI", "Metodología de Desarrollo de Software", "Yii2"],
+    "homepage": "http://aup-helper.uci.cu/",
     "type": "project",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
+        "source": "https://github.com/ecruzp/aup_uci_helper"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
-        "php": ">=5.4.0",
-        "yiisoft/yii2": "~2.0.14",
+        "php": ">=7.2.0",
+        "yiisoft/yii2": "~2.0.24",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
-        "webvimark/module-user-management": "*",
+        "mdmsoft/yii2-admin": "^2.0@dev",
         "dmstr/yii2-adminlte-asset": "^2.1",
         "kartik-v/yii2-widgets": "^3.4",
-        "bizley/migration": "^2.3",
         "kartik-v/yii2-export": "^1.3",
         "kartik-v/yii2-detail-view": "*",
-        "2amigos/yii2-ckeditor-widget" : "~2.1",
         "kartik-v/yii2-number": "*",
         "hyperia/yii2-secure-headers": "^1.0",
-        "evert/sitemap-php": "^1.2",
-        "kartik-v/yii2-editable": "dev-master",
-        "kartik-v/yii2-date-range": "dev-master",
-        "kartik-v/yii2-widget-depdrop": "dev-master"
+        "2amigos/yii2-translateable-behavior": "*",
+        "machour/yii2-notifications": "*",
+        "kartik-v/yii2-tabs-x": "*",
+        "2amigos/yii2-ckeditor-widget" : "^2.1@dev",
+        "kartik-v/yii2-date-range": "*",
+        "bedezign/yii2-audit": "*",
+        "kartik-v/yii2-editable": "^1.7",
+        "bizley/migration": "4.0-RC1",
+        "kartik-v/yii2-datecontrol": "dev-master",
+        "kartik-v/yii2-password": "dev-master",
+        "kartik-v/yii2-builder": "dev-master",
+        "kartik-v/yii2-helpers": "dev-master",
+        "kartik-v/yii2-validators": "dev-master",
+        "kartik-v/yii2-checkbox-x": "dev-master",
+        "kartik-v/yii2-icons": "@dev"
     },
     "require-dev": {
-        "yiisoft/yii2-debug": "~2.1.0",
-        "yiisoft/yii2-gii": "~2.1.0",
+        "yiisoft/yii2-debug": "~2.0.0",
+        "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",
-        "codeception/base": "^2.4.0",
-        "phpunit/phpunit": "~6.5.5",
-        "codeception/verify": "~1.0.0",
-        "symfony/browser-kit": ">=2.7 <=4.2.4"
+        "codeception/base": "^2.2.3",
+        "codeception/verify": "~0.3.1"
     },
     "config": {
         "process-timeout": 1800,
         "fxp-asset": {
             "enabled": false
         }
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ]
+    }
 }

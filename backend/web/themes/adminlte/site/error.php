@@ -22,8 +22,8 @@ $this->title = $name;
             </p>
 
             <p>
-                <?= 'El error anterior ocurrió mientras el servidor web estaba procesando su solicitud. Póngase en contacto con nosotros si cree que se trata de un error del servidor. Gracias.' ?>
-                <?= 'Mientras tanto, puede' ?> <a href='<?= Yii::$app-> homeUrl?> '> <?= 'Volver al inicio' ?> </a>.
+                <?= Yii::t('backend','El error anterior ocurrió mientras el servidor web estaba procesando su solicitud. Póngase en contacto con nosotros si cree que se trata de un error del servidor. Gracias.') ?>
+                <?= Yii::t('backend','Mientras tanto, puede') ?> <a href='<?= Yii::$app-> homeUrl?> '> <?= Yii::t('backend','Volver al inicio') ?> </a>.
             </p>
 
         </div>

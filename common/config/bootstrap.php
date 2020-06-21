@@ -1,5 +1,6 @@
 <?php
 Yii::setAlias('@common', dirname(__DIR__));
+Yii::setAlias('@frontend', dirname(dirname(__DIR__)) . '/frontend');
 Yii::setAlias('@backend', dirname(dirname(__DIR__)) . '/backend');
 Yii::setAlias('@console', dirname(dirname(__DIR__)) . '/console');
-Yii::setAlias('@database', dirname(dirname(__DIR__)) . '/database');
+Yii::setAlias('rce', dirname(dirname(__DIR__)) . '/frontend/components/rce');

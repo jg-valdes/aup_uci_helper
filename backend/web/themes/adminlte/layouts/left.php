@@ -1,10 +1,9 @@
 <?php
 
-//use mdm\admin\components\Helper;
+use mdm\admin\components\Helper;
 use dmstr\widgets\Menu;
-//use backend\models\settings\Setting;
-use yii\helpers\Url;
-use webvimark\modules\UserManagement\models\User;
+use backend\models\settings\Setting;
+use common\models\User;
 
 ?>
 
@@ -19,92 +18,127 @@ use webvimark\modules\UserManagement\models\User;
 
         <?php
 
-//        TODO: filtrar proyectos para el ususario autenticado
-        $projects = [
-            [
-                'label' => "Proyecto X",
-                'icon' => 'circle-o',
-                'url' => "#",
-            ],
-        ];
-
         $menu_items = [
-
-            //submenu de business
+            //Inicio
             [
-                'label' => "Proyectos",
-                'icon' => 'object-group',
-                'url' => '#',
-                'items' => $projects,
+                'label' => Yii::t("backend", "Panel de Control"),
+                'icon' => 'dashboard',
+                'url' => '/',
             ],
 
-            //submenu de nomencladores
-            [
-                'label' => "Nomencladores",
-                'icon' => 'list',
-                'url' => '#',
-                'items' => [
-                    [
-                        'label' => "Nomenclador 1",
-                        'icon' => 'circle-o',
-                        'url' => "#",
-                    ],
-                ],
-            ],
 
-            //submenu de administración
+            //Administracion
             [
-                'label' => "Administración",
+                'label' => Yii::t("backend", "Administración"),
                 'icon' => 'cogs',
                 'url' => '#',
                 'items' => [
                     [
-                        'label' => "Usuarios",
-                        'icon' => 'users',
-                        'items' => \webvimark\modules\UserManagement\UserManagementModule::menuItems(),
-                        'visible' => Yii::$app->user->isSuperadmin
-                    ],
-                    [
-                        'label' => "Perfiles de Usuarios",
-                        'icon' => 'users',
-                        'url' => ['/user-profile/index'],
-                        'visible' => User::hasRole("Admin")
-                    ],
-//
-                    [
-                        'label' => "Ajustes",
-                        'icon' => 'cog',
-                        'url' => ['/setting/update', 'id' => \backend\models\settings\Setting::SETTING_ID],
-                    ],
-//
-//                    [
-//                        'label' => 'Configuración de Correo',
-//                        'icon' => 'circle-o',
-//                        'url' => Url::toRoute(['/config-mailer/update', 'id'=>1]),
-//                    ],
-//
-                    [
-                        'label' => 'Configuraciones del sistema',
+                        'label' => Yii::t("backend", "Usuarios"),
                         'icon' => 'circle-o',
-                        'url' => Url::toRoute(['/system-config/index']),
-                        'visible' => User::hasRole("Admin") && false
+                        'url' => ['/security/user'],
+                    ],
+                ],
+            ],
+
+            //Seguridad
+            [
+                'label' => Yii::t("backend", "Seguridad"),
+                'icon' => 'shield',
+                'url' => '#',
+                'items' => [
+                    [
+                        'label' => Yii::t("backend", "Rutas"),
+                        'icon' => 'circle',
+                        'url' => ['/security/route'],
+                        'visible' => false
                     ],
 
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'], 'visible' => YII_ENV_DEV && Yii::$app->user->isSuperadmin],
+                    [
+                        'label' => Yii::t("backend", "Permisos"),
+                        'icon' => 'circle',
+                        'url' => ['/security/permission'],
+                    ],
+                    [
+                        'label' => Yii::t("backend", "Roles"),
+                        'icon' => 'circle',
+                        'url' => ['/security/role'],
+                    ],
+                    [
+                        'label' => Yii::t("backend", "Sistema"),
+                        'icon' => 'cog',
+                        'url' => ['/setting/update', 'id' => Setting::getIdSettingByActiveLanguage()],
+                    ],
+                ],
+            ],
 
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'], 'visible' => YII_ENV_DEV && Yii::$app->user->isSuperadmin],
+            //Support
+            [
+                'label' => Yii::t("backend", "Soporte"),
+                'icon' => 'cog',
+                'url' => '#',
+                'items' => [
+                    [
+                        'label' => Yii::t('backend', 'Grupos de FAQ'),
+                        'icon' => 'list',
+                        'url' => ['/faq-group/index'],
+                    ],
+
+                    [
+                        'label' => Yii::t('backend', 'FAQ'),
+                        'icon' => 'question',
+                        'url' => ['/faq/index'],
+                    ],
+
+                ],
+            ],
+
+            //Desarrolladores
+            [
+                'label' => Yii::t("backend", "DESARROLLADORES"),
+                'icon' => 'warning',
+                'url' => '#',
+                'items' => [
+                    [
+                        'label' => Yii::t('backend', 'Envío de correo'),
+                        'icon' => 'envelope',
+                        'url' => ['/config-mailer/update', 'id' => 1],
+                    ],
+
+                    [
+                        'label' => Yii::t("backend", "Idiomas"),
+                        'icon' => 'flag',
+                        'url' => ['/language/index'],
+                    ],
+
+                    [
+                        'label' => Yii::t("backend", "Traducciones"),
+                        'icon' => 'language',
+                        'url' => '#',
+                        'items' => [
+                            ['label' => Yii::t("backend", "Listado"), 'icon' => 'list', 'url' => ['/source-message/index'],],
+                            ['label' => Yii::t("backend", "Importar"), 'icon' => 'upload', 'url' => ['/source-message/import'],],
+
+                        ],
+                    ],
+
+                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii/default'], 'visible' => Yii::$app->user->can(User::ROLE_SUPERADMIN) && YII_ENV_DEV],
+
+                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'], 'visible' => Yii::$app->user->can(User::ROLE_SUPERADMIN) && YII_ENV_DEV],
+
 
                 ],
             ],
         ];
+
+        $menu_items = Helper::filter($menu_items);
 
         ?>
 
         <?= Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget' => 'tree'],
-                'items' => $menu_items,
-                'encodeLabels' => false
+                'items' => $menu_items
             ]
         ) ?>
 

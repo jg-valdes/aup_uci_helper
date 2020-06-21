@@ -15,7 +15,7 @@ class HeaderSecurity extends \hyperia\security\Headers
             $header = Yii::$app->response->headers;
             $header->remove('Content-Security-Policy');
             $header->remove('Server');
-            $header->set("Server", "");
+            $header->set("Server", "Eurolab.co");
             $header->set("Strict-Transport-Security", "max-age=0");
 
             if(Yii::$app->request->isAjax){

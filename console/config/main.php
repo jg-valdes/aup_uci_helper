@@ -7,19 +7,13 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'aup_uci_helper-console',
+    'id' => 'cocoleads-console',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'console\controllers',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
-    ],
-    'modules'=>[
-        'user-management' => [
-            'class' => 'webvimark\modules\UserManagement\UserManagementModule',
-            'controllerNamespace'=>'vendor\webvimark\modules\UserManagement\controllers', // To prevent yii help from crashing
-        ],
     ],
     'controllerMap' => [
         'fixture' => [
@@ -35,6 +29,12 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
+        ],
+        'urlManagerBackend' => [
+            'class' => 'yii\web\urlManager',
+			'baseUrl' => 'https://api.coco-leads.com',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
         ],
     ],
     'params' => $params,

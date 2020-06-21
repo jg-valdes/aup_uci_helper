@@ -3,7 +3,7 @@
 /* @var $this yii\web\View */
 /* @var $model \backend\models\settings\Setting */
 
-$this->title = 'Actualizar ajustes';
+$this->title = Yii::t('backend', 'Actualizar ajustes');
 $this->params['breadcrumbs'][] = Yii::t('yii', 'Update');
 ?>
 <div class="setting-update">

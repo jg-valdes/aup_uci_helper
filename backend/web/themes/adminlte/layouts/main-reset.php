@@ -33,8 +33,10 @@ $this->registerCssFile("@web/css/customYii.css");
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-
-<body class="login-page">
+<?php
+    $path = Url::to('@web/images/page_bg_blur02.jpg');
+?>
+<body class="login-page" style="background-image:url('<?= $path ?>'); background-size:cover;">
 
 <?php $this->beginBody() ?>
 

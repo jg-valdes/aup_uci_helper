@@ -1,4 +1,8 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
+    'adminEmail' => 'egutierrezr421@gmail.com',
+	'languages' => [
+		'en' => 'EN',
+		'es' => 'ES',
+	],
 ];

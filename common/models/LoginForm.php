@@ -31,18 +31,19 @@ class LoginForm extends Model
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'username' => 'Usuario',
-            'password' => 'Contraseña',
-            'rememberMe' => 'Recordarme'
-        ];
-    }
 
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+
+			'username' => Yii::t('common','Nombre de usuario'),
+			'password' => Yii::t('common','Contraseña'),
+			'rememberMe' => Yii::t('common','Recordarme'),
+		];
+	}
 
     /**
      * Validates the password.
@@ -53,10 +54,25 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute, $params)
     {
-        if (!$this->hasErrors()) {
+        if (!$this->hasErrors())
+        {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+
+            if (!$user)
+            {
+                $this->addError($attribute, Yii::t('common','Usuario o contraseña incorrecta'));
+            }
+            else
+            {
+                if ($user->status === GlobalFunctions::STATUS_INACTIVE)
+                {
+                    $this->addError('username', Yii::t('common','Usuario inactivo'));
+                }
+
+                if (!$user->validatePassword($this->password))
+                {
+                    $this->addError($attribute, Yii::t('common','Contraseña incorrecta'));
+                }
             }
         }
     }

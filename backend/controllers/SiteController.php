@@ -1,17 +1,19 @@
 <?php
 namespace backend\controllers;
 
-use backend\models\business\Shipping;
+use common\models\GlobalFunctions;
+use machour\yii2\notifications\models\Notification;
 use Yii;
 use yii\helpers\FileHelper;
-use common\controllers\BaseController;
+use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\web\Cookie;
 
 /**
  * Site controller
  */
-class SiteController extends BaseController
+class SiteController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -19,18 +21,11 @@ class SiteController extends BaseController
     public function behaviors()
     {
         return [
-            'ghost-access'=> [
-                'class' => 'webvimark\modules\UserManagement\components\GhostAccessControl',
-            ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['error'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index', 'ckeditorupload'],
+                        'actions' => ['logout', 'index', 'error','change_lang', "ckeditorupload",'info_test'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -57,19 +52,11 @@ class SiteController extends BaseController
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
-        $this->layout = "main-clean";
-
-        return $this->render('index', [
-
-        ]);
+        return $this->render('index');
     }
+
 
     /**
      * Logout action.
@@ -83,11 +70,19 @@ class SiteController extends BaseController
         return $this->goHome();
     }
 
-    /**
-     * Action for upload images to server when using CKEditor widget
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     */
+	public function actionChange_lang($lang,$url)
+	{
+		\Yii::$app->language = $lang;
+		$cookie = new Cookie([
+		    'name' => 'lang-farming',
+            'value' => $lang,
+            'expire' => time() + 60*60*24*30, // 30 days
+        ]);
+		\Yii::$app->getResponse()->getCookies()->add($cookie);
+
+		return $this->redirect($url);
+	}
+
     public function actionCkeditorupload()
     {
         $funcNum = $_REQUEST['CKEditorFuncNum'];
@@ -95,16 +90,16 @@ class SiteController extends BaseController
         if ($_FILES['upload']) {
 
             if (($_FILES['upload'] == "none") OR (empty($_FILES['upload']['name']))) {
-                $message = Yii::t('app', "Por favor, suba alguna imagen");
+                $message = Yii::t('backend', "Por favor, suba alguna imagen");
             } else if ($_FILES['upload']["size"] == 0 OR $_FILES['upload']["size"] > 5 * 1024 * 1024) {
-                $message = Yii::t("app","El tamaño de la imagen no debe exceder los ") . " 5MB";
+                $message = Yii::t("backend","El tamaño de la imagen no debe exceder los ") . " 5MB";
             } else if (($_FILES['upload']["type"] != "image/jpg")
                 AND ($_FILES['upload']["type"] != "image/jpeg")
                 AND ($_FILES['upload']["type"] != "image/png")) {
-                $message = Yii::t("app","Ha ocurrido un error subiendo la imagen, por favor intente de nuevo");
+                $message = Yii::t("backend","Ha ocurrido un error subiendo la imagen, por favor intente de nuevo");
             } else if (!is_uploaded_file($_FILES['upload']["tmp_name"])) {
 
-                $message = Yii::t("app","Formato de imagen no permitido, debe ser JPG, JPEG o PNG.");
+                $message = Yii::t("backend","Formato de imagen no permitido, debe ser JPG, JPEG o PNG.");
             } else {
 
                 $extension = pathinfo($_FILES['upload']['name'], PATHINFO_EXTENSION);
@@ -122,7 +117,7 @@ class SiteController extends BaseController
                 $url = Yii::$app->urlManager->getBaseUrl() . $folder . $name;
 
                 move_uploaded_file($_FILES['upload']['tmp_name'], $realPath . $name);
-                $message = Yii::t("app","Imagen subida satisfactoriamente");
+                $message = Yii::t("backend","Imagen subida satisfactoriamente");
                 //Giving permission to read and modify uploaded image
                 chmod($realPath . $name, 0777);
             }
@@ -131,5 +126,10 @@ class SiteController extends BaseController
                 . $funcNum . '", "' . $url . '", "' . $message . '" );</script>';
 
         }
+    }
+
+    public function actionInfo_test()
+    {
+        return $this->render('phpinfo');
     }
 }

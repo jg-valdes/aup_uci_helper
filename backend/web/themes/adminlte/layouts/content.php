@@ -1,6 +1,8 @@
 <?php
 use yii\widgets\Breadcrumbs;
 use common\widgets\Custom_Alert;
+use yii\helpers\Inflector;
+use yii\helpers\Html;
 
 ?>
 <div class="content-wrapper">
@@ -29,24 +31,21 @@ use common\widgets\Custom_Alert;
                             <h3 class="box-title">
 			                    <?php
 			                    if ($this->title !== null) {
-				                    echo \yii\helpers\Html::encode($this->title);
+				                    echo Html::encode($this->title);
 			                    } else {
-				                    echo \yii\helpers\Inflector::camel2words(
-					                    \yii\helpers\Inflector::id2camel($this->context->module->id)
+				                    echo Inflector::camel2words(
+					                    Inflector::id2camel($this->context->module->id)
 				                    );
 				                    echo ($this->context->module->id !== \Yii::$app->id) ? '<small>Module</small>' : '';
 			                    } ?>
                             </h3>
 	                    <?php } ?>
 
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                        </div>
+
                         <!-- /.box-tools -->
                     </div>
                     <!-- /.box-header -->
-                    <div class="box-body table-responsive">
+                    <div class="box-body">
 	                    <?= $content ?>
                     </div>
                     <!-- /.box-body -->
