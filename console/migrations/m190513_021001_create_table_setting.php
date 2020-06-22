@@ -4,7 +4,7 @@ use yii\db\Migration;
 
 class m190513_021001_create_table_setting extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $tableOptions = null;
         if ($this->db->driverName === 'mysql')
@@ -24,7 +24,7 @@ class m190513_021001_create_table_setting extends Migration
         ], $tableOptions);
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('{{%setting}}');
     }

@@ -6,7 +6,7 @@ class m151008_162401_create_notification_table extends Migration
 {
     const TABLE_NAME = '{{%notification}}';
     
-    public function up()
+    public function safeUp()
     {
         $this->createTable(self::TABLE_NAME, [
             'id' => $this->primaryKey(),
@@ -20,7 +20,7 @@ class m151008_162401_create_notification_table extends Migration
         ]);
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropTable(self::TABLE_NAME);
     }

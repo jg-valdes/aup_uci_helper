@@ -14,7 +14,7 @@ class m140602_111327_create_menu_table extends \yii\db\Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         $menuTable = Configs::instance()->menuTable;
         $tableOptions = null;
@@ -36,7 +36,7 @@ class m140602_111327_create_menu_table extends \yii\db\Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         $this->dropTable(Configs::instance()->menuTable);
     }

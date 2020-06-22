@@ -4,7 +4,7 @@ use yii\db\Migration;
 
 class m190513_021113_create_table_setting_lang extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $tableOptions = null;
         if ($this->db->driverName === 'mysql')
@@ -27,7 +27,7 @@ class m190513_021113_create_table_setting_lang extends Migration
         $this->addForeignKey('fk_setting1', '{{%setting_lang}}', 'setting_id', '{{%setting}}', 'id', 'CASCADE', 'CASCADE');
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('{{%setting_lang}}');
     }

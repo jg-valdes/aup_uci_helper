@@ -8,7 +8,7 @@ class m190203_224324_init_values_table_language extends Migration
     /**
      * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
      //Insert data to language ES
         $language_1_exists = Language::findOne(1);
@@ -68,7 +68,7 @@ class m190203_224324_init_values_table_language extends Migration
     /**
      * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
         echo "      > All languages will be delete when drop table.\n";
         return true;

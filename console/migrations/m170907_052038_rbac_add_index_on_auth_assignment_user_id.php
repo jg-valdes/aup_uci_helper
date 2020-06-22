@@ -39,7 +39,7 @@ class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
     /**
      * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
         $authManager = $this->getAuthManager();
         $this->createIndex($this->index, $authManager->assignmentTable, $this->column);
@@ -48,7 +48,7 @@ class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
     /**
      * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
         $authManager = $this->getAuthManager();
         $this->dropIndex($this->index, $authManager->assignmentTable);

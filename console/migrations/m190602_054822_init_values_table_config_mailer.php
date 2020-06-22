@@ -11,7 +11,7 @@ class m190602_054822_init_values_table_config_mailer extends Migration
     /**
      * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
         echo "   > Inserting init values into ConfigMailer table.\n";
             $config = new ConfigMailer();
@@ -30,7 +30,7 @@ class m190602_054822_init_values_table_config_mailer extends Migration
     /**
      * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
         ConfigMailer::deleteAll();
     }

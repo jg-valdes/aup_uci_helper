@@ -3,10 +3,13 @@
 use yii\db\Migration;
 
 /**
- * Class m200606_145508_create_table_faq_group
+ * Handles the creation of table `{{%scenario}}`.
  */
-class m200606_145508_create_table_faq_group extends Migration
+class m200622_110515_create_scenario_table extends Migration
 {
+    /**
+     * {@inheritdoc}
+     */
     public function safeUp()
     {
         $tableOptions = null;
@@ -14,17 +17,26 @@ class m200606_145508_create_table_faq_group extends Migration
             $tableOptions = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%faq_group}}', [
+        $this->createTable('{{%scenario}}', [
             'id' => $this->primaryKey(),
+            'name' => $this->string(255)->notNull(),
+            'description' => $this->text(),
             'status' => $this->tinyInteger(1)->notNull()->defaultValue('1'),
             'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
         ], $tableOptions);
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function safeDown()
     {
-        $this->dropTable('{{%faq_group}}');
+        if (in_array('scenario', Yii::$app->db->schema->getTableNames())) {
+            echo "truncating table scenario ...";
+            $this->truncateTable('{{%scenario}}');
+            echo "deleting table scenario ...";
+            $this->dropTable('{{%scenario}}');
+        }
     }
 }

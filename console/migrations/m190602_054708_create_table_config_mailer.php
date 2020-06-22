@@ -4,7 +4,7 @@ use yii\db\Migration;
 
 class m190602_054708_create_table_config_mailer extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $tableOptions = null;
         if ($this->db->driverName === 'mysql') {
@@ -24,7 +24,7 @@ class m190602_054708_create_table_config_mailer extends Migration
 
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('{{%config_mailer}}');
     }

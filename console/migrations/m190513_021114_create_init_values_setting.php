@@ -6,7 +6,7 @@ use backend\models\settings\SettingLang;
 
 class m190513_021114_create_init_values_setting extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $setting_exist = Setting::findOne(1);
 
@@ -61,7 +61,7 @@ class m190513_021114_create_init_values_setting extends Migration
 
     }
 
-    public function down()
+    public function safeDown()
     {
         echo "      > m190513_021114_create_init_values_setting revert when drop table.\n";
 

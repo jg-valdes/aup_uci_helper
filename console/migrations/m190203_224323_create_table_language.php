@@ -4,7 +4,7 @@ use yii\db\Migration;
 
 class m190203_224323_create_table_language extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $tableOptions = null;
         if ($this->db->driverName === 'mysql')
@@ -23,7 +23,7 @@ class m190203_224323_create_table_language extends Migration
 
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('{{%language}}');
     }

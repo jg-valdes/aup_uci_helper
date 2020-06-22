@@ -3,10 +3,13 @@
 use yii\db\Migration;
 
 /**
- * Class m200606_145508_create_table_faq_group
+ * Handles the creation of table `{{%aup_role}}`.
  */
-class m200606_145508_create_table_faq_group extends Migration
+class m200622_110552_create_aup_role_table extends Migration
 {
+    /**
+     * {@inheritdoc}
+     */
     public function safeUp()
     {
         $tableOptions = null;
@@ -14,17 +17,26 @@ class m200606_145508_create_table_faq_group extends Migration
             $tableOptions = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%faq_group}}', [
+        $this->createTable('{{%aup_role}}', [
             'id' => $this->primaryKey(),
+            'name' => $this->string(255)->notNull(),
+            'description' => $this->text(),
             'status' => $this->tinyInteger(1)->notNull()->defaultValue('1'),
             'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
         ], $tableOptions);
-
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function safeDown()
     {
-        $this->dropTable('{{%faq_group}}');
+        if (in_array('aup_role', Yii::$app->db->schema->getTableNames())) {
+            echo "truncating table aup_role ...";
+            $this->truncateTable('{{%aup_role}}');
+            echo "deleting table aup_role ...";
+            $this->dropTable('{{%aup_role}}');
+        }
     }
 }

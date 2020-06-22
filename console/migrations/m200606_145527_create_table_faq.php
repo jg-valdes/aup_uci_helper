@@ -7,7 +7,7 @@ use yii\db\Migration;
  */
 class m200606_145527_create_table_faq extends Migration
 {
-    public function up()
+    public function safeUp()
     {
         $tableOptions = null;
         if ($this->db->driverName === 'mysql') {
@@ -26,7 +26,7 @@ class m200606_145527_create_table_faq extends Migration
         $this->addForeignKey('fk_faq_group2', '{{%faq}}', 'faq_group_id', '{{%faq_group}}', 'id', 'CASCADE', 'CASCADE');
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('{{%faq}}');
     }
