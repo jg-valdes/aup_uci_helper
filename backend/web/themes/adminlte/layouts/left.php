@@ -34,10 +34,36 @@ use common\models\User;
                 'url' => '#',
                 'items' => [
                     [
-                        'label' => Yii::t("backend", "Usuarios"),
-                        'icon' => 'circle-o',
-                        'url' => ['/security/user'],
+                        'label' => Yii::t("backend", "Escenarios"),
+                        'icon' => 'tags',
+                        'url' => ['/scenario/index'],
                     ],
+                    [
+                        'label' => Yii::t("backend", "Métricas"),
+                        'icon' => 'arrows',
+                        'url' => ['/metric/index'],
+                    ],
+                    [
+                        'label' => Yii::t("backend", "Procesos"),
+                        'icon' => 'archive',
+                        'url' => ['/process/index'],
+                    ],
+                    [
+                        'label' => Yii::t("backend", "Artefactos"),
+                        'icon' => 'file-word-o',
+                        'url' => ['/artifact/index'],
+                    ],
+                    [
+                        'label' => Yii::t("backend", "Roles AUP"),
+                        'icon' => 'users',
+                        'url' => ['/aup-role/index'],
+                    ],
+                    [
+                        'label' => Yii::t("backend", "Disciplinas"),
+                        'icon' => 'circle-o',
+                        'url' => ['/discipline/index'],
+                    ],
+
                 ],
             ],
 
@@ -47,6 +73,11 @@ use common\models\User;
                 'icon' => 'shield',
                 'url' => '#',
                 'items' => [
+                    [
+                        'label' => Yii::t("backend", "Usuarios"),
+                        'icon' => 'circle',
+                        'url' => ['/security/user'],
+                    ],
                     [
                         'label' => Yii::t("backend", "Rutas"),
                         'icon' => 'circle',
@@ -78,6 +109,11 @@ use common\models\User;
                 'icon' => 'cog',
                 'url' => '#',
                 'items' => [
+                    [
+                        'label' => Yii::t('backend', 'Base de Casos'),
+                        'icon' => 'database',
+                        'url' => ['/ia-case/index'],
+                    ],
                     [
                         'label' => Yii::t('backend', 'Grupos de FAQ'),
                         'icon' => 'list',
