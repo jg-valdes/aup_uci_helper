@@ -40,7 +40,7 @@ class Discipline extends BaseModel
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name', 'order'], 'required'],
             [['description'], 'string'],
             [['order', 'status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
@@ -55,10 +55,10 @@ class Discipline extends BaseModel
     {
         return [
             'id' => Yii::t('backend', 'ID'),
-            'name' => Yii::t('backend', 'Name'),
+            'name' => Yii::t('backend', 'Nombre'),
             'alias' => Yii::t('backend', 'Alias'),
-            'description' => Yii::t('backend', 'Description'),
-            'order' => Yii::t('backend', 'Order'),
+            'description' => Yii::t('backend', 'Descripción'),
+            'order' => Yii::t('backend', 'Órden'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
@@ -109,4 +109,19 @@ class Discipline extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    public function getDescription()
+    {
+        if(isset($this->description) && !empty($this->description)){
+            return $this->description;
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
+
+    public function getAlias()
+    {
+        if(isset($this->alias) && !empty($this->alias)){
+            return $this->alias;
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
 }

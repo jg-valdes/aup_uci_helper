@@ -24,7 +24,7 @@ $create_button='';
 
 <?php 
 	if (Helper::checkRoute($controllerId . 'create')) {
-		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Discipline')]);
+		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Disciplina')]);
 	}
 
 	$custom_elements_gridview = new Custom_Settings_Column_GridView($create_button,$dataProvider);
@@ -60,7 +60,27 @@ $create_button='';
             'columns' => [
 
 				$custom_elements_gridview->getSerialColumn(),
-    
+                [
+                    'attribute'=>'order',
+                    'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
+                    'vAlign' => 'middle',
+                    'hAlign'=>'center',
+                    'filterType'=>GridView::FILTER_NUMBER,
+                    'filterWidgetOptions'=>[
+                        'maskedInputOptions' => [
+                            'allowMinus' => false,
+                            'groupSeparator' => '.',
+                            'radixPoint' => ',',
+                            'digits' => 0
+                        ],
+                        'displayOptions' => ['class' => 'form-control kv-monospace'],
+                        'saveInputContainer' => ['class' => 'kv-saved-cont']
+                    ],
+                    'value' => function ($data) {
+                        return GlobalFunctions::formatNumber($data->order);
+                    },
+                    'format' => 'html',
+                ],
 				[
 					'attribute'=>'name',
 					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
@@ -77,43 +97,8 @@ $create_button='';
 					'hAlign'=>'center',
 					'format'=> 'html',
 					'value' => function ($data) {
-						return $data->alias;
+						return $data->getAlias();
 					}
-				],
-                                         
-                [
-                    'attribute'=>'description',
-                    'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-                    'hAlign'=>'center',
-                    'format'=> 'html',
-                    'value' => function ($data) {
-                        $field_data = $data->description;
-                        $formatted_field_data = BaseStringHelper::truncateWords($field_data, 5, '...', true);
-
-                        return $formatted_field_data;
-                    }
-                ],
-                                             
-				[
-					'attribute'=>'order',
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'vAlign' => 'middle',
-					'hAlign'=>'center',
-                    'filterType'=>GridView::FILTER_NUMBER,
-                    'filterWidgetOptions'=>[
-                        'maskedInputOptions' => [
-                            'allowMinus' => false,
-                            'groupSeparator' => '.',
-                            'radixPoint' => ',',
-                            'digits' => 0
-                        ],
-                        'displayOptions' => ['class' => 'form-control kv-monospace'],
-                        'saveInputContainer' => ['class' => 'kv-saved-cont']
-                    ],
-                    'value' => function ($data) {
-                        return GlobalFunctions::formatNumber($data->order);
-                    },
-                    'format' => 'html',
 				],
                                  
                 [
@@ -144,34 +129,6 @@ $create_button='';
 					'filterWidgetOptions' => ([
 						'model' => $searchModel,
 						'attribute' => 'created_at',
-						'presetDropdown' => false,
-						'convertFormat' => true,
-						'pluginOptions' => [
-							'locale' => [
-							    'format' => 'd-M-Y'
-							]
-						],
-                        'pluginEvents' => [
-                            'apply.daterangepicker' => 'function(ev, picker) {
-                                if($(this).val() == "") {
-                                    picker.callback(picker.startDate.clone(), picker.endDate.clone(), picker.chosenLabel);
-                                }
-                            }',
-                        ]
-					])
-				],
-                                         
-				[
-					'attribute'=>'updated_at',
-                    'value' => function($data){
-                        return GlobalFunctions::formatDateToShowInSystem($data->updated_at);
-                    },
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'hAlign'=>'center',
-					'filterType' => GridView::FILTER_DATE_RANGE,
-					'filterWidgetOptions' => ([
-						'model' => $searchModel,
-						'attribute' => 'updated_at',
 						'presetDropdown' => false,
 						'convertFormat' => true,
 						'pluginOptions' => [

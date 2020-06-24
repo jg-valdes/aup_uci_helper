@@ -85,6 +85,8 @@ class DisciplineSearch extends Discipline
             $this->created_at = null;
         }
 
+        $query->orderBy('order DESC');
+
         return $dataProvider;
     }
 }

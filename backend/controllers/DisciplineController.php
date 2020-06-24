@@ -69,7 +69,13 @@ class DisciplineController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Discipline();
+        $max = 0;//Discipline::find()->max('order');
+        if($max){
+            $max++;
+        }else{
+            $max = 1;
+        }
+        $model = new Discipline(['status'=>Discipline::STATUS_ACTIVE, 'order'=>$max]);
 
         if ($model->load(Yii::$app->request->post()))
         {

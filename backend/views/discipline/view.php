@@ -10,7 +10,7 @@ use common\models\GlobalFunctions;
 
 $controllerId = '/'.$this->context->uniqueId.'/';
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Disciplines'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Disciplinas'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="box-header">
@@ -38,17 +38,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'labelColOptions' => ['style' => 'width: 40%'],
             'attributes' => [
                 'id',
-                'name',
-                'alias',
-                [
-                    'attribute'=> 'description',
-                    'value'=> $model->description,
-                    'format'=> 'html',
-                ],
-                
                 [
                     'attribute'=> 'order',
                     'value'=> GlobalFunctions::formatNumber($model->order),
+                    'format'=> 'html',
+                ],
+                'name',
+                [
+                    'attribute'=> 'alias',
+                    'value'=> $model->getAlias(),
+                    'format'=> 'html',
+                ],
+                [
+                    'attribute'=> 'description',
+                    'value'=> $model->getDescription(),
                     'format'=> 'html',
                 ],
                 
