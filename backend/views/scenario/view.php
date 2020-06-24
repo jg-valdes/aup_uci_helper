@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'name',
                 [
                     'attribute'=> 'description',
-                    'value'=> $model->description,
+                    'value'=> $model->getDescription(),
                     'format'=> 'html',
                 ],
                 

@@ -54,8 +54,8 @@ class Metric extends BaseModel
     {
         return [
             'id' => Yii::t('backend', 'ID'),
-            'name' => Yii::t('backend', 'Name'),
-            'description' => Yii::t('backend', 'Description'),
+            'name' => Yii::t('backend', 'Nombre'),
+            'description' => Yii::t('backend', 'Descripción'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
@@ -114,4 +114,11 @@ class Metric extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    public function getDescription()
+    {
+        if(isset($this->description) && !empty($this->description)){
+            return $this->description;
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
 }

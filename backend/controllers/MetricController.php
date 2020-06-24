@@ -69,7 +69,7 @@ class MetricController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Metric();
+        $model = new Metric(['status'=>Metric::STATUS_ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()))
         {
