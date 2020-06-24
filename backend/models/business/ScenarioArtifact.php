@@ -56,9 +56,9 @@ class ScenarioArtifact extends BaseModel
             'id' => Yii::t('backend', 'ID'),
             'scenario_id' => Yii::t('backend', 'Scenario ID'),
             'artifact_id' => Yii::t('backend', 'Artifact ID'),
-            'status' => Yii::t('backend', 'Status'),
-            'created_at' => Yii::t('backend', 'Created At'),
-            'updated_at' => Yii::t('backend', 'Updated At'),
+            'status' => Yii::t('backend', 'Estado'),
+            'created_at' => Yii::t('backend', 'Fecha de creación'),
+            'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
         ];
     }
 

@@ -69,7 +69,7 @@ class ScenarioController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Scenario();
+        $model = new Scenario(['status'=>Scenario::STATUS_ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()))
         {

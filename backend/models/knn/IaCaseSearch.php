@@ -2,6 +2,7 @@
 
 namespace backend\models\knn;
 
+use common\models\GlobalFunctions;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -66,12 +67,8 @@ class IaCaseSearch extends IaCase
             'id' => $this->id,
             'scenario_id' => $this->scenario_id,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        /*
-        //Ejemplo de configuración para utilización de DATERANGE
         if(isset($this->created_at) && !empty($this->created_at))
         {
             $date_explode = explode(' - ',$this->created_at);
@@ -83,7 +80,6 @@ class IaCaseSearch extends IaCase
 
             $this->created_at = null;
         }
-        */
 
         return $dataProvider;
     }

@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use backend\models\business\RoleResponsibility;
+use common\models\GlobalFunctions;
 
 /**
  * RoleResponsibilitySearch represents the model behind the search form of `backend\models\business\RoleResponsibility`.
@@ -66,14 +67,10 @@ class RoleResponsibilitySearch extends RoleResponsibility
             'id' => $this->id,
             'aup_role_id' => $this->aup_role_id,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
 
-        /*
-        //Ejemplo de configuración para utilización de DATERANGE
         if(isset($this->created_at) && !empty($this->created_at))
         {
             $date_explode = explode(' - ',$this->created_at);
@@ -85,7 +82,6 @@ class RoleResponsibilitySearch extends RoleResponsibility
 
             $this->created_at = null;
         }
-        */
 
         return $dataProvider;
     }

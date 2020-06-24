@@ -2,6 +2,7 @@
 
 namespace backend\models\business;
 
+use common\models\GlobalFunctions;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -67,16 +68,12 @@ class ProcessSearch extends Process
             'discipline_id' => $this->discipline_id,
             'order' => $this->order,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'alias', $this->alias])
             ->andFilterWhere(['like', 'description', $this->description]);
 
-        /*
-        //Ejemplo de configuración para utilización de DATERANGE
         if(isset($this->created_at) && !empty($this->created_at))
         {
             $date_explode = explode(' - ',$this->created_at);
@@ -88,7 +85,6 @@ class ProcessSearch extends Process
 
             $this->created_at = null;
         }
-        */
 
         return $dataProvider;
     }

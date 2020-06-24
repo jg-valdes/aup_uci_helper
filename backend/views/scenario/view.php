@@ -10,7 +10,7 @@ use common\models\GlobalFunctions;
 
 $controllerId = '/'.$this->context->uniqueId.'/';
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Scenarios'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Escenarios'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="box-header">

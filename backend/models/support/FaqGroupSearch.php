@@ -2,6 +2,7 @@
 
 namespace backend\models\support;
 
+use common\models\GlobalFunctions;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -64,14 +65,22 @@ class FaqGroupSearch extends FaqGroup
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        $query
-            ->andFilterWhere(['like', 'faq_group_lang.name', $this->name])
-            ->andFilterWhere(['like', 'faq_group_lang.description', $this->description])
-        ;
+        $query->andFilterWhere(['like', 'faq_group_lang.name', $this->name])
+            ->andFilterWhere(['like', 'faq_group_lang.description', $this->description]);
+
+        if(isset($this->created_at) && !empty($this->created_at))
+        {
+            $date_explode = explode(' - ',$this->created_at);
+            $start_date = GlobalFunctions::formatDateToSaveInDB($date_explode[0]).' 00:00:00';
+            $end_date = GlobalFunctions::formatDateToSaveInDB($date_explode[1]).' 23:59:59';
+
+            $query->andFilterWhere(['>=', 'created_at', $start_date])
+                ->andFilterWhere(['<=', 'created_at', $end_date]);
+
+            $this->created_at = null;
+        }
 
         return $dataProvider;
     }

@@ -60,9 +60,9 @@ class CaseMetric extends BaseModel
             'metric_id' => Yii::t('backend', 'Metric ID'),
             'ia_case_id' => Yii::t('backend', 'Ia Case ID'),
             'metric_item_id' => Yii::t('backend', 'Metric Item ID'),
-            'status' => Yii::t('backend', 'Status'),
-            'created_at' => Yii::t('backend', 'Created At'),
-            'updated_at' => Yii::t('backend', 'Updated At'),
+            'status' => Yii::t('backend', 'Estado'),
+            'created_at' => Yii::t('backend', 'Fecha de creación'),
+            'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
         ];
     }
 

@@ -56,9 +56,9 @@ class RoleResponsibility extends BaseModel
             'id' => Yii::t('backend', 'ID'),
             'aup_role_id' => Yii::t('backend', 'Aup Role ID'),
             'name' => Yii::t('backend', 'Name'),
-            'status' => Yii::t('backend', 'Status'),
-            'created_at' => Yii::t('backend', 'Created At'),
-            'updated_at' => Yii::t('backend', 'Updated At'),
+            'status' => Yii::t('backend', 'Estado'),
+            'created_at' => Yii::t('backend', 'Fecha de creación'),
+            'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
         ];
     }
 

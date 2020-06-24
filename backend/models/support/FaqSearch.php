@@ -2,6 +2,7 @@
 
 namespace backend\models\support;
 
+use common\models\GlobalFunctions;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -70,7 +71,17 @@ class FaqSearch extends Faq
         $query->andFilterWhere(['like', 'faq_lang.question', $this->question])
             ->andFilterWhere(['like', 'faq_lang.answer', $this->answer]);
 
-        $query->andFilterWhere(['DATE(created_at)' => $this->created_at]);
+        if(isset($this->created_at) && !empty($this->created_at))
+        {
+            $date_explode = explode(' - ',$this->created_at);
+            $start_date = GlobalFunctions::formatDateToSaveInDB($date_explode[0]).' 00:00:00';
+            $end_date = GlobalFunctions::formatDateToSaveInDB($date_explode[1]).' 23:59:59';
+
+            $query->andFilterWhere(['>=', 'created_at', $start_date])
+                ->andFilterWhere(['<=', 'created_at', $end_date]);
+
+            $this->created_at = null;
+        }
 
         return $dataProvider;
     }

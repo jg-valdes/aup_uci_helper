@@ -15,7 +15,7 @@ use yii\helpers\BaseStringHelper;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $controllerId = '/'.$this->context->uniqueId.'/';
-$this->title = Yii::t('backend', 'Scenarios');
+$this->title = Yii::t('backend', 'Escenarios');
 $this->params['breadcrumbs'][] = $this->title;
 
 $create_button='';
@@ -24,7 +24,7 @@ $create_button='';
 
 <?php 
 	if (Helper::checkRoute($controllerId . 'create')) {
-		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Scenario')]);
+		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Escenario')]);
 	}
 
 	$custom_elements_gridview = new Custom_Settings_Column_GridView($create_button,$dataProvider);
@@ -70,19 +70,6 @@ $create_button='';
 						return $data->name;
 					}
 				],
-                                         
-                [
-                    'attribute'=>'description',
-                    'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-                    'hAlign'=>'center',
-                    'format'=> 'html',
-                    'value' => function ($data) {
-                        $field_data = $data->description;
-                        $formatted_field_data = BaseStringHelper::truncateWords($field_data, 5, '...', true);
-
-                        return $formatted_field_data;
-                    }
-                ],
                                              
                 [
                     'attribute' => 'status',
@@ -112,34 +99,6 @@ $create_button='';
 					'filterWidgetOptions' => ([
 						'model' => $searchModel,
 						'attribute' => 'created_at',
-						'presetDropdown' => false,
-						'convertFormat' => true,
-						'pluginOptions' => [
-							'locale' => [
-							    'format' => 'd-M-Y'
-							]
-						],
-                        'pluginEvents' => [
-                            'apply.daterangepicker' => 'function(ev, picker) {
-                                if($(this).val() == "") {
-                                    picker.callback(picker.startDate.clone(), picker.endDate.clone(), picker.chosenLabel);
-                                }
-                            }',
-                        ]
-					])
-				],
-                                         
-				[
-					'attribute'=>'updated_at',
-                    'value' => function($data){
-                        return GlobalFunctions::formatDateToShowInSystem($data->updated_at);
-                    },
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'hAlign'=>'center',
-					'filterType' => GridView::FILTER_DATE_RANGE,
-					'filterWidgetOptions' => ([
-						'model' => $searchModel,
-						'attribute' => 'updated_at',
 						'presetDropdown' => false,
 						'convertFormat' => true,
 						'pluginOptions' => [

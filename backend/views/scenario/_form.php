@@ -21,40 +21,33 @@ use yii\helpers\ArrayHelper;
 <div class="box-body">
 <?php 
  $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
-        
-         
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-          
-    <?= 
-        $form->field($model, "description")->widget(CKEditor::className(), [
-            "preset" => "custom",
-            "clientOptions" => [
-                "toolbar" => GlobalFunctions::getToolBarForCkEditor(),
-            ],
-        ])
-    ?>
-             
-    <?=
-        $form->field($model,"status")->widget(SwitchInput::classname(), [
-            "type" => SwitchInput::CHECKBOX,
-            "pluginOptions" => [
-                "onText"=> Yii::t("backend","Activo"),
-                "offText"=> Yii::t("backend","Inactivo")
-            ]
-        ])
-    ?>
-             
-    <?=
-        $form->field($model, "created_at")->widget(DateControl::classname(), [
-            "type" => DateControl::FORMAT_DATETIME
-        ])
-    ?>
-             
-    <?=
-        $form->field($model, "updated_at")->widget(DateControl::classname(), [
-            "type" => DateControl::FORMAT_DATETIME
-        ])
-    ?>
+
+    <div class="row">
+        <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+        </div>
+        <div class="col-md-2 col-lg-2 col-xl-2 col-sm-12 col-xs-12">
+            <?=
+            $form->field($model,"status")->widget(SwitchInput::classname(), [
+                "type" => SwitchInput::CHECKBOX,
+                "pluginOptions" => [
+                    "onText"=> Yii::t("backend","Activo"),
+                    "offText"=> Yii::t("backend","Inactivo")
+                ]
+            ])
+            ?>
+        </div>
+        <div class="col-md-12 col-lg-12 col-xl-12 col-sm-12 col-xs-12">
+            <?=
+            $form->field($model, "description")->widget(CKEditor::className(), [
+                "preset" => "custom",
+                "clientOptions" => [
+                    "toolbar" => GlobalFunctions::getToolBarForCkEditor(),
+                ],
+            ])
+            ?>
+        </div>
+    </div>
     
 </div>
 <div class="box-footer">
