@@ -44,6 +44,7 @@ class Metric extends BaseModel
             [['status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
+            [['name', 'description', 'status'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
         ];
     }
 

@@ -43,8 +43,10 @@ class Discipline extends BaseModel
             [['name', 'order'], 'required'],
             [['description'], 'string'],
             [['order', 'status'], 'integer'],
+            [['order'], 'unique'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'alias'], 'string', 'max' => 255],
+            [['name', 'description', 'alias', 'order', 'status'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
         ];
     }
 

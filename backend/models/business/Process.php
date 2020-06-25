@@ -42,12 +42,14 @@ class Process extends BaseModel
     public function rules()
     {
         return [
-            [['discipline_id', 'name'], 'required'],
+            [['discipline_id', 'name', 'order'], 'required'],
             [['discipline_id', 'order', 'status'], 'integer'],
             [['description'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'alias'], 'string', 'max' => 255],
+            [['order'], 'unique', 'targetAttribute'=>['order', 'discipline_id']],
             [['discipline_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discipline::className(), 'targetAttribute' => ['discipline_id' => 'id']],
+            [['name', 'description', 'alias', 'order', 'discipline_id', 'status'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
         ];
     }
 
@@ -58,11 +60,11 @@ class Process extends BaseModel
     {
         return [
             'id' => Yii::t('backend', 'ID'),
-            'discipline_id' => Yii::t('backend', 'Discipline ID'),
-            'name' => Yii::t('backend', 'Name'),
+            'discipline_id' => Yii::t('backend', 'Disciplina'),
+            'name' => Yii::t('backend', 'Nombre'),
             'alias' => Yii::t('backend', 'Alias'),
-            'description' => Yii::t('backend', 'Description'),
-            'order' => Yii::t('backend', 'Order'),
+            'description' => Yii::t('backend', 'Descripción'),
+            'order' => Yii::t('backend', 'Órden'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
@@ -121,4 +123,49 @@ class Process extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    /**
+     * Returns the las order of any process related with Discipline id param
+     * @param $disciplineId integer Discipline ID
+     * @return mixed
+     */
+    public static function getLastOrderForDiscipline($disciplineId)
+    {
+        return self::find()->joinWith(['discipline'])->where(['discipline_id' => $disciplineId])->max('process.order');
+    }
+
+    /**
+     * Returns a formatted link for related discipline or a no value span message
+     * @return string
+     */
+    public function getDisciplineLink()
+    {
+        if(isset($this->discipline)){
+            return $this->discipline->getIDLinkForThisModel();
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
+
+    /**
+     * Returns alias value or a no value span message
+     * @return string
+     */
+    public function getAlias()
+    {
+        if(isset($this->alias) && !empty($this->alias)){
+            return $this->alias;
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
+
+    /**
+     * Returns description value or a no value span message
+     * @return string
+     */
+    public function getDescription()
+    {
+        if(isset($this->description) && !empty($this->description)){
+            return $this->description;
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
 }

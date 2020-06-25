@@ -11,7 +11,7 @@ use backend\models\Discipline;
 
 $controllerId = '/'.$this->context->uniqueId.'/';
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Processes'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Procesos'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="box-header">
@@ -41,24 +41,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 'id',
                 [
                     'attribute'=> 'discipline_id',
-                    'value'=> (isset($model->discipline->name) && !empty($model->discipline->name))? $model->discipline->name : null,
+                    'value'=> $model->getDisciplineLink(),
                     'format'=> 'html',
                 ],
-        
-                'name',
-                'alias',
-                [
-                    'attribute'=> 'description',
-                    'value'=> $model->description,
-                    'format'=> 'html',
-                ],
-                
                 [
                     'attribute'=> 'order',
                     'value'=> GlobalFunctions::formatNumber($model->order),
                     'format'=> 'html',
                 ],
-                
+
+                'name',
+                [
+                    'attribute'=> 'alias',
+                    'value'=> $model->getAlias(),
+                    'format'=> 'html',
+                ],
+                [
+                    'attribute'=> 'description',
+                    'value'=> $model->getDescription(),
+                    'format'=> 'html',
+                ],
+
+
                 [
                     'attribute'=> 'status',
                     'value'=> GlobalFunctions::getStatusValue($model->status),

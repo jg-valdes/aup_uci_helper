@@ -86,6 +86,7 @@ class ProcessSearch extends Process
             $this->created_at = null;
         }
 
+        $query->orderBy('discipline_id DESC, order ASC');
         return $dataProvider;
     }
 }

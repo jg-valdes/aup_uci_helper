@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use common\models\GlobalFunctions;
 use yii\helpers\Url;
 use yii\db\Exception;
+use yii\web\Response;
 
 /**
  * ProcessController implements the CRUD actions for Process model.
@@ -69,7 +70,7 @@ class ProcessController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Process();
+        $model = new Process(['status'=>Process::STATUS_ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()))
         {
@@ -279,4 +280,25 @@ class ProcessController extends Controller
         }
     }
 
+    /**
+     * Returns the last order Process for a selected Discipline
+     * @param $disciplineId integer Discipline to identify the last order Process
+     * @return array
+     */
+    public function actionGetLastOrder($disciplineId)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->getIsAjax()) {
+            $lastOrder = Process::getLastOrderForDiscipline($disciplineId);
+            return [
+                'status' => 200,
+                'order' => $lastOrder + 1
+            ];
+        }
+
+        return [
+            'status' => 404,
+            'message' => Yii::t("backend", "Página no encontrada.")
+        ];
+    }
 }

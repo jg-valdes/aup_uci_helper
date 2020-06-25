@@ -69,7 +69,7 @@ class DisciplineController extends Controller
      */
     public function actionCreate()
     {
-        $max = 0;//Discipline::find()->max('order');
+        $max = Discipline::find()->max('discipline.order');
         if($max){
             $max++;
         }else{

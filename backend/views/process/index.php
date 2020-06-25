@@ -10,13 +10,14 @@ use backend\components\Custom_Settings_Column_GridView;
 use common\models\GlobalFunctions;
 use yii\helpers\BaseStringHelper;
 use backend\models\business\Discipline;
+use backend\models\business\Process;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\business\ProcessSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $controllerId = '/'.$this->context->uniqueId.'/';
-$this->title = Yii::t('backend', 'Processes');
+$this->title = Yii::t('backend', 'Procesos');
 $this->params['breadcrumbs'][] = $this->title;
 
 $create_button='';
@@ -25,7 +26,7 @@ $create_button='';
 
 <?php 
 	if (Helper::checkRoute($controllerId . 'create')) {
-		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Process')]);
+		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Proceso')]);
 	}
 
 	$custom_elements_gridview = new Custom_Settings_Column_GridView($create_button,$dataProvider);
@@ -72,7 +73,7 @@ $create_button='';
 						'pluginOptions'=>['allowClear'=>true],
 						'options'=>['multiple'=>false],
 					],
-					'value'=> 'discipline.name',
+					'value'=> function(Process $model){ return $model->getDisciplineLink();},
 					'filterInputOptions'=>['placeholder'=> '------'],
 					'hAlign'=>'center',
 				],
@@ -86,29 +87,6 @@ $create_button='';
 						return $data->name;
 					}
 				],
-                                        
-				[
-					'attribute'=>'alias',
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'hAlign'=>'center',
-					'format'=> 'html',
-					'value' => function ($data) {
-						return $data->alias;
-					}
-				],
-                                         
-                [
-                    'attribute'=>'description',
-                    'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-                    'hAlign'=>'center',
-                    'format'=> 'html',
-                    'value' => function ($data) {
-                        $field_data = $data->description;
-                        $formatted_field_data = BaseStringHelper::truncateWords($field_data, 5, '...', true);
-
-                        return $formatted_field_data;
-                    }
-                ],
                                              
 				[
 					'attribute'=>'order',
@@ -160,34 +138,6 @@ $create_button='';
 					'filterWidgetOptions' => ([
 						'model' => $searchModel,
 						'attribute' => 'created_at',
-						'presetDropdown' => false,
-						'convertFormat' => true,
-						'pluginOptions' => [
-							'locale' => [
-							    'format' => 'd-M-Y'
-							]
-						],
-                        'pluginEvents' => [
-                            'apply.daterangepicker' => 'function(ev, picker) {
-                                if($(this).val() == "") {
-                                    picker.callback(picker.startDate.clone(), picker.endDate.clone(), picker.chosenLabel);
-                                }
-                            }',
-                        ]
-					])
-				],
-                                         
-				[
-					'attribute'=>'updated_at',
-                    'value' => function($data){
-                        return GlobalFunctions::formatDateToShowInSystem($data->updated_at);
-                    },
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'hAlign'=>'center',
-					'filterType' => GridView::FILTER_DATE_RANGE,
-					'filterWidgetOptions' => ([
-						'model' => $searchModel,
-						'attribute' => 'updated_at',
 						'presetDropdown' => false,
 						'convertFormat' => true,
 						'pluginOptions' => [
