@@ -69,7 +69,7 @@ class AupRoleController extends Controller
      */
     public function actionCreate()
     {
-        $model = new AupRole();
+        $model = new AupRole(['status'=>AupRole::STATUS_ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()))
         {

@@ -20,7 +20,7 @@ class AupRoleSearch extends AupRole
     {
         return [
             [['id', 'status'], 'integer'],
-            [['name', 'description', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'created_at'], 'safe'],
         ];
     }
 

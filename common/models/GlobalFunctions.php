@@ -889,33 +889,6 @@ class GlobalFunctions
         }
     }
 
-//    /**
-//     * Función para devolver la configuración del FileInput
-//     *
-//     * @return array
-//     */
-//    public static function getOptionsFileInput($preview)
-//    {
-//        return [
-//            'allowedFileExtensions' => self::getImageFormats(),
-//            'defaultPreviewContent' => '<img src="' . $preview . '" class="previewAvatar">',
-//            'showUpload' => false,
-//            'fileActionSettings' => [
-//                'showDrag' => false,
-//                'showZoom' => true,
-//                'showUpload' => false,
-//                'showDelete' => false,
-//                'showView' => false,
-//            ],
-//            'browseLabel' => '',
-//            'removeLabel' => '',
-//            'layoutTemplates' => [
-//                'main1' => '{preview}<div class=\'input-group {class}\'><div class=\'input-group-btn\'>{browse}{upload}{remove}</div>{caption}</div>',
-//            ]
-//        ];
-//
-//    }
-
     /***********************
      *  Extensions section *
      ***********************/

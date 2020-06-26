@@ -43,6 +43,7 @@ class AupRole extends BaseModel
             [['status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
+            [['name', 'description', 'status'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
         ];
     }
 
@@ -53,8 +54,8 @@ class AupRole extends BaseModel
     {
         return [
             'id' => Yii::t('backend', 'ID'),
-            'name' => Yii::t('backend', 'Name'),
-            'description' => Yii::t('backend', 'Description'),
+            'name' => Yii::t('backend', 'Nombre'),
+            'description' => Yii::t('backend', 'Descripción'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
@@ -105,4 +106,11 @@ class AupRole extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    public function getDescription()
+    {
+        if(isset($this->description) && !empty($this->description)){
+            return $this->description;
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
 }
