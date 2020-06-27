@@ -16,6 +16,7 @@ use yii\helpers\Html;
  * @property string $name
  * @property string $alias
  * @property string $description
+ * @property int $views
  * @property int $order
  * @property int $status
  * @property string $created_at
@@ -43,11 +44,11 @@ class Process extends BaseModel
     {
         return [
             [['discipline_id', 'name', 'order'], 'required'],
-            [['discipline_id', 'order', 'status'], 'integer'],
+            [['discipline_id', 'order', 'status', 'views'], 'integer'],
             [['description'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'alias'], 'string', 'max' => 255],
-            [['order'], 'unique', 'targetAttribute'=>['order', 'discipline_id']],
+//            [['order'], 'unique', 'targetAttribute'=>['order', 'discipline_id']],
             [['discipline_id'], 'exist', 'skipOnError' => true, 'targetClass' => Discipline::className(), 'targetAttribute' => ['discipline_id' => 'id']],
             [['name', 'description', 'alias', 'order', 'discipline_id', 'status'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
         ];
@@ -65,6 +66,7 @@ class Process extends BaseModel
             'alias' => Yii::t('backend', 'Alias'),
             'description' => Yii::t('backend', 'Descripción'),
             'order' => Yii::t('backend', 'Órden'),
+            'views' => Yii::t('backend', 'Visitas'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
@@ -124,7 +126,7 @@ class Process extends BaseModel
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
     /**
-     * Returns the las order of any process related with Discipline id param
+     * Returns the last order of any process related with Discipline id param
      * @param $disciplineId integer Discipline ID
      * @return mixed
      */

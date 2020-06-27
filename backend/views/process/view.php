@@ -49,7 +49,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'value'=> GlobalFunctions::formatNumber($model->order),
                     'format'=> 'html',
                 ],
-
+                [
+                    'attribute'=> 'views',
+                    'value'=> GlobalFunctions::getFormattedViewsCount($model->views, true),
+                    'format'=> 'html',
+                ],
                 'name',
                 [
                     'attribute'=> 'alias',

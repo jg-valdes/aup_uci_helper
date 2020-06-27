@@ -15,6 +15,7 @@ use yii\helpers\Html;
  * @property int $id
  * @property string $name
  * @property string $description
+ * @property int $views
  * @property int $status
  * @property string $created_at
  * @property string $updated_at
@@ -42,7 +43,7 @@ class Scenario extends BaseModel
         return [
             [['name'], 'required'],
             [['description'], 'string'],
-            [['status'], 'integer'],
+            [['status', 'views'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
             [['name', 'description', 'status'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
@@ -58,6 +59,7 @@ class Scenario extends BaseModel
             'id' => Yii::t('backend', 'ID'),
             'name' => Yii::t('backend', 'Nombre'),
             'description' => Yii::t('backend', 'Descripción'),
+            'views' => Yii::t('backend', 'Visitas'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),

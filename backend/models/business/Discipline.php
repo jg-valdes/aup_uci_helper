@@ -15,6 +15,7 @@ use yii\helpers\Html;
  * @property string $name
  * @property string $alias
  * @property string $description
+ * @property int $views
  * @property int $order
  * @property int $status
  * @property string $created_at
@@ -42,7 +43,7 @@ class Discipline extends BaseModel
         return [
             [['name', 'order'], 'required'],
             [['description'], 'string'],
-            [['order', 'status'], 'integer'],
+            [['order', 'status', 'views'], 'integer'],
             [['order'], 'unique'],
             [['created_at', 'updated_at'], 'safe'],
             [['name', 'alias'], 'string', 'max' => 255],
@@ -60,6 +61,7 @@ class Discipline extends BaseModel
             'name' => Yii::t('backend', 'Nombre'),
             'alias' => Yii::t('backend', 'Alias'),
             'description' => Yii::t('backend', 'Descripción'),
+            'views' => Yii::t('backend', 'Visitas'),
             'order' => Yii::t('backend', 'Órden'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),

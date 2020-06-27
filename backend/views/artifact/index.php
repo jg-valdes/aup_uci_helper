@@ -16,7 +16,7 @@ use backend\models\business\Process;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $controllerId = '/'.$this->context->uniqueId.'/';
-$this->title = Yii::t('backend', 'Artifacts');
+$this->title = Yii::t('backend', 'Artefactos');
 $this->params['breadcrumbs'][] = $this->title;
 
 $create_button='';
@@ -25,10 +25,52 @@ $create_button='';
 
 <?php 
 	if (Helper::checkRoute($controllerId . 'create')) {
-		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Artifact')]);
+		$create_button = Html::a('<i class="fa fa-plus"></i> '.Yii::t('backend', 'Crear'), ['create'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend', 'Crear').' '.Yii::t('backend', 'Artefacto')]);
 	}
 
 	$custom_elements_gridview = new Custom_Settings_Column_GridView($create_button,$dataProvider);
+
+$my_custom_action_column = [
+    'class' => 'kartik\grid\ActionColumn',
+    'dropdown' => false,
+    'vAlign' => 'middle',
+    'template' => Helper::filterActionColumn(['download', 'view', 'update', 'delete']),
+    'buttons' => [
+        'download' => function ($url, $model) {
+            $url_action = Url::to(['/artifact/download', 'id' => $model->id]);
+            $options = [
+                'class' => 'btn btn-xs btn-default btn-flat',
+                'title' => Yii::t('common','Descargar'),
+                'data-toggle' => 'tooltip',
+                'data-pjax' => 0
+            ];
+            return Html::a('<i class="glyphicon glyphicon-download"></i>', $url_action, $options);
+        },
+    ],
+    'viewOptions' => [
+        'class' => 'btn btn-xs btn-default btn-flat',
+        'title' => Yii::t('yii','View'),
+        'data-toggle' => 'tooltip',
+    ],
+    'updateOptions' => [
+        'class' => 'btn btn-xs btn-default btn-flat',
+        'title' => Yii::t('yii','Update'),
+        'data-toggle' => 'tooltip',
+    ],
+    'deleteOptions' => [
+        'class' => 'btn btn-xs btn-danger btn-flat',
+        'title' => Yii::t('yii','Delete'),
+        'data-toggle' => 'tooltip',
+        'data-confirm' => Yii::t('backend', '¿Seguro desea eliminar este elemento?'),
+    ],
+    'visibleButtons' => [
+        'download' => function ($model, $key, $index) {
+            return $model->hasResource();
+        }
+    ]
+
+];
+$custom_elements_gridview->setActionColumn($my_custom_action_column);
 ?>
 
     <div class="box-body">
@@ -76,45 +118,12 @@ $create_button='';
 					'filterInputOptions'=>['placeholder'=> '------'],
 					'hAlign'=>'center',
 				],
-                            
-				[
-					'attribute'=>'name',
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'hAlign'=>'center',
-					'format'=> 'html',
-					'value' => function ($data) {
-						return $data->name;
-					}
-				],
-                                         
-                [
-                    'attribute'=>'description',
-                    'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-                    'hAlign'=>'center',
-                    'format'=> 'html',
-                    'value' => function ($data) {
-                        $field_data = $data->description;
-                        $formatted_field_data = BaseStringHelper::truncateWords($field_data, 5, '...', true);
 
-                        return $formatted_field_data;
-                    }
-                ],
-                                            
-				[
-					'attribute'=>'filename',
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'hAlign'=>'center',
-					'format'=> 'html',
-					'value' => function ($data) {
-						return $data->filename;
-					}
-				],
-                                         
-				[
-					'attribute'=>'order',
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'vAlign' => 'middle',
-					'hAlign'=>'center',
+                [
+                    'attribute'=>'order',
+                    'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
+                    'vAlign' => 'middle',
+                    'hAlign'=>'center',
                     'filterType'=>GridView::FILTER_NUMBER,
                     'filterWidgetOptions'=>[
                         'maskedInputOptions' => [
@@ -130,6 +139,15 @@ $create_button='';
                         return GlobalFunctions::formatNumber($data->order);
                     },
                     'format' => 'html',
+                ],
+				[
+					'attribute'=>'name',
+					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
+					'hAlign'=>'center',
+					'format'=> 'html',
+					'value' => function ($data) {
+						return $data->name;
+					}
 				],
                                  
                 [
@@ -176,35 +194,7 @@ $create_button='';
                         ]
 					])
 				],
-                                         
-				[
-					'attribute'=>'updated_at',
-                    'value' => function($data){
-                        return GlobalFunctions::formatDateToShowInSystem($data->updated_at);
-                    },
-					'contentOptions'=>['class'=>'kv-align-left kv-align-middle'],
-					'hAlign'=>'center',
-					'filterType' => GridView::FILTER_DATE_RANGE,
-					'filterWidgetOptions' => ([
-						'model' => $searchModel,
-						'attribute' => 'updated_at',
-						'presetDropdown' => false,
-						'convertFormat' => true,
-						'pluginOptions' => [
-							'locale' => [
-							    'format' => 'd-M-Y'
-							]
-						],
-                        'pluginEvents' => [
-                            'apply.daterangepicker' => 'function(ev, picker) {
-                                if($(this).val() == "") {
-                                    picker.callback(picker.startDate.clone(), picker.endDate.clone(), picker.chosenLabel);
-                                }
-                            }',
-                        ]
-					])
-				],
-                                        
+
 				$custom_elements_gridview->getActionColumn(),
 
 				$custom_elements_gridview->getCheckboxColumn(),

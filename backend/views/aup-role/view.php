@@ -38,6 +38,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'labelColOptions' => ['style' => 'width: 40%'],
             'attributes' => [
                 'id',
+                [
+                    'attribute'=> 'views',
+                    'value'=> GlobalFunctions::getFormattedViewsCount($model->views, true),
+                    'format'=> 'html',
+                ],
                 'name',
                 [
                     'attribute'=> 'description',

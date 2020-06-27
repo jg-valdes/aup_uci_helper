@@ -11,7 +11,7 @@ use backend\models\Process;
 
 $controllerId = '/'.$this->context->uniqueId.'/';
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Artifacts'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Artefactos'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="box-header">
@@ -21,6 +21,9 @@ $this->params['breadcrumbs'][] = $this->title;
         }
 
         echo Html::a('<i class="fa fa-remove"></i> '.Yii::t('backend','Cancelar'), ['index'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend','Cancelar')]);
+        if($model->hasResource()){
+            echo Html::a('<i class="fa fa-download"></i> '.Yii::t('backend','Descargar'), ['download', 'id'=>$model->id, 'fromView'=>true], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend','Descargar')]);
+        }
 
         if (Helper::checkRoute($controllerId . 'delete')) {
             echo Html::a('<i class="fa fa-trash"></i> '.Yii::t('yii','Delete'), ['delete', 'id' => $model->id], [
@@ -41,24 +44,38 @@ $this->params['breadcrumbs'][] = $this->title;
                 'id',
                 [
                     'attribute'=> 'process_id',
-                    'value'=> (isset($model->process->name) && !empty($model->process->name))? $model->process->name : null,
+                    'value'=> $model->getProcessLink(),
                     'format'=> 'html',
                 ],
-        
-                'name',
-                [
-                    'attribute'=> 'description',
-                    'value'=> $model->description,
-                    'format'=> 'html',
-                ],
-                
-                'filename',
                 [
                     'attribute'=> 'order',
                     'value'=> GlobalFunctions::formatNumber($model->order),
                     'format'=> 'html',
                 ],
-                
+                [
+                    'attribute'=> 'views',
+                    'value'=> GlobalFunctions::getFormattedViewsCount($model->views, true),
+                    'format'=> 'html',
+                ],
+
+                [
+                    'attribute'=> 'downloads',
+                    'value'=> GlobalFunctions::getFormattedDownsCount($model->downloads, true),
+                    'format'=> 'html',
+                ],
+
+                'name',
+                [
+                    'attribute'=> 'description',
+                    'value'=> $model->getDescription(),
+                    'format'=> 'html',
+                ],
+
+                [
+                    'attribute'=> 'filename',
+                    'value'=> GlobalFunctions::renderPreviewForIndex($model->getResourceFile(), $model->name),
+                    'format' => 'raw',
+                ],
                 [
                     'attribute'=> 'status',
                     'value'=> GlobalFunctions::getStatusValue($model->status),

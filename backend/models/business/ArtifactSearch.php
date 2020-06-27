@@ -20,7 +20,7 @@ class ArtifactSearch extends Artifact
     {
         return [
             [['id', 'process_id', 'order', 'status'], 'integer'],
-            [['name', 'description', 'filename', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'created_at'], 'safe'],
         ];
     }
 
@@ -70,8 +70,7 @@ class ArtifactSearch extends Artifact
             'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         if(isset($this->created_at) && !empty($this->created_at))
         {
@@ -84,6 +83,8 @@ class ArtifactSearch extends Artifact
 
             $this->created_at = null;
         }
+
+        $query->orderBy('process_id DESC, order ASC');
 
         return $dataProvider;
     }

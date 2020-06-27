@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use common\models\GlobalFunctions;
 use yii\helpers\Url;
 use yii\db\Exception;
+use yii\web\Response;
 
 /**
  * ArtifactController implements the CRUD actions for Artifact model.
@@ -69,7 +70,7 @@ class ArtifactController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Artifact();
+        $model = new Artifact(['status'=>Artifact::STATUS_ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()))
         {
@@ -77,8 +78,14 @@ class ArtifactController extends Controller
 
             try
             {
+                $resource = $model->uploadResource();
+
                 if($model->save())
                 {
+                    if($resource){
+                        $path = $model->getResourceFile();
+                        $resource->saveAs($path);
+                    }
                     $transaction->commit();
 
                     GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento creado correctamente'));
@@ -115,14 +122,40 @@ class ArtifactController extends Controller
 
         if(isset($model) && !empty($model))
         {
+            $old_resource_file = $model->getResourceFile();
+            $old_resource = $model->filename;
+
             if ($model->load(Yii::$app->request->post()))
             {
                 $transaction = \Yii::$app->db->beginTransaction();
 
                 try
                 {
+                    $resource = $model->uploadResource();
+
+                    // revert back if no valid file instance uploaded
+                    if ($resource === false) {
+                        $model->filename = $old_resource;
+                    }
+
                     if($model->save())
                     {
+                        // upload only if valid uploaded file instance found by main logo
+                        if ($resource !== false) // delete old and overwrite
+                        {
+                            if(file_exists($old_resource_file))
+                            {
+                                try{
+                                    unlink($old_resource_file);
+                                }catch (\Exception $exception){
+                                    Yii::info("Error deleting resource on Artifact: " . $old_resource_file);
+                                    Yii::info($exception->getMessage());
+                                }
+                            }
+
+                            $path = $model->getResourceFile();
+                            $resource->saveAs($path);
+                        }
                         $transaction->commit();
 
                         GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
@@ -168,6 +201,7 @@ class ArtifactController extends Controller
         {
             if($model->delete())
             {
+                $model->deleteResource();
                 $transaction->commit();
 
                 GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento eliminado correctamente'));
@@ -231,6 +265,8 @@ class ArtifactController extends Controller
                         $deleteOK=false;
                         $nameErrorDelete= $nameErrorDelete.'['.$model->name.'] ';
                         $contNameErrorDelete++;
+                    } else {
+                        $model->deleteResource();
                     }
                 }
 
@@ -279,4 +315,48 @@ class ArtifactController extends Controller
         }
     }
 
+    /**
+     * Returns the last order Artifact for a selected Process
+     * @param $processId integer Process to identify the last order Artifact
+     * @return array
+     */
+    public function actionGetLastOrder($processId)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->getIsAjax()) {
+            $lastOrder = Artifact::getLastOrderForArtifact($processId);
+            return [
+                'status' => 200,
+                'order' => $lastOrder + 1
+            ];
+        }
+
+        return [
+            'status' => 404,
+            'message' => Yii::t("backend", "Página no encontrada.")
+        ];
+    }
+
+    /**
+     * Download an existing Resource model.
+     * If download is successful, the downs counter is updated on DB.
+     * @param integer $id
+     * @param bool $fromView
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
+     */
+    public function actionDownload($id, $fromView = false)
+    {
+        $model = $this->findModel($id);
+            $attachName = $model->process->name . "_" . str_replace(" ", "_", $model->name . "." . $model->getResourceExtension());
+
+            set_time_limit(5 * 60);
+            $route = $model->getResourceFile();
+            $model->updateAttributes(['downloads'=>$model->downloads+1]);
+            Yii::$app->response->sendFile($route, $attachName)->send();
+
+            return $fromView ? $this->redirect(['view', 'id' => $id]) : $this->redirect(['index']);
+
+    }
 }
