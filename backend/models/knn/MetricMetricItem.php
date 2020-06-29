@@ -40,8 +40,8 @@ class MetricMetricItem extends BaseModel
     public function rules()
     {
         return [
-            [['metric_id', 'metric_item_id'], 'required'],
-            [['metric_id', 'metric_item_id', 'status'], 'integer'],
+            [['metric_id', 'metric_item_id', 'weight'], 'required'],
+            [['metric_id', 'status'], 'integer'],
             [['weight'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
             [['metric_id'], 'exist', 'skipOnError' => true, 'targetClass' => Metric::className(), 'targetAttribute' => ['metric_id' => 'id']],
@@ -56,9 +56,9 @@ class MetricMetricItem extends BaseModel
     {
         return [
             'id' => Yii::t('backend', 'ID'),
-            'metric_id' => Yii::t('backend', 'Metric ID'),
-            'metric_item_id' => Yii::t('backend', 'Metric Item ID'),
-            'weight' => Yii::t('backend', 'Weight'),
+            'metric_id' => Yii::t('backend', 'Métrica'),
+            'metric_item_id' => Yii::t('backend', 'Opción'),
+            'weight' => Yii::t('backend', 'Peso'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
@@ -117,4 +117,13 @@ class MetricMetricItem extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    public function getMetricName()
+    {
+        return $this->metric->name;
+    }
+
+    public function getMetricItemName()
+    {
+        return $this->metricItem->name;
+    }
 }

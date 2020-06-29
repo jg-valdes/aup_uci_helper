@@ -2,9 +2,12 @@
 
 namespace backend\controllers;
 
+use backend\models\knn\MetricItem;
+use backend\models\knn\MetricMetricItem;
 use Yii;
 use backend\models\knn\Metric;
 use backend\models\knn\MetricSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -52,13 +55,26 @@ class MetricController extends Controller
      * Displays a single Metric model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
         $model = $this->findModel($id);
 
+        $query = MetricMetricItem::find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort' => false,
+        ]);
+
+        $query->andFilterWhere(['metric_id' => $model->id]);
+
         return $this->render('view', [
             'model' => $model,
+            'modelItem' => new MetricItem(['status'=>MetricItem::STATUS_ACTIVE]),
+            'modelRelation' => new MetricMetricItem(['status'=>MetricMetricItem::STATUS_ACTIVE]),
+            'metricItemsDataProvider' => $dataProvider
         ]);
     }
 
@@ -279,4 +295,164 @@ class MetricController extends Controller
         }
     }
 
+
+    /**
+     * Creates a new MetricItem model using ajax request.
+     * If creation is successful, the response will tell it using json format.
+     * @param $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionCreateItemAjax($id)
+    {
+        $metric = $this->findModel($id);
+
+        $item = new MetricItem([
+            'status' => MetricItem::STATUS_ACTIVE,
+        ]);
+        $relation = new MetricMetricItem([
+            'status' => MetricMetricItem::STATUS_ACTIVE,
+            'weight' => 0,
+        ]);
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            if ($item->load(Yii::$app->request->post()) && $relation->load(Yii::$app->request->post())) {
+                // process upload resource file instance
+                if($item->save()){
+                    $relation->metric_id = $metric->id;
+                    $relation->metric_item_id = $item->id;
+                    if($relation->save()){
+                        return [
+                            'data' => [
+                                'success' => true,
+                                'model' => $item,
+                                'message' => 'Model has been saved.',
+                            ],
+                            'code' => 0,
+                        ];
+                    }else{
+                        $item->delete();
+                    }
+                }
+            }
+
+            return [
+                'data' => [
+                    'success' => false,
+                    'model' => $item,
+                    'errors' => array_merge($item->getErrors(), $relation->getErrors()),
+                    'message' => 'An error ocurred.',
+                ],
+                'code' => 1,
+            ];
+
+        }
+    }
+
+    /**
+     * Ajax Update Metric Item
+     * @throws NotFoundHttpException
+     */
+    public function actionUpdateItem()
+    {
+        // validate if there is a editable input saved via AJAX
+        if (Yii::$app->request->post('hasEditable')) {
+
+            // instantiate your landing page model for saving
+            $relationId = Yii::$app->request->post('editableKey');
+            $attr = Yii::$app->request->post('editableAttribute');
+
+            $model = $this->findRelationModel($relationId);
+            $item = $model->metricItem;
+            $posted = current($_POST['MetricMetricItem']);
+            //$post = ['MetricMetricItem' => $posted];
+
+            switch ($attr){
+                case 'weight':
+                    $model->weight = $posted['weight'];
+                    break;
+                case 'metric_item_id':
+                    $item->name = $posted['metric_item_id'];
+                    $model->metric_item_id = $item->id;
+                    break;
+                case 'status':
+                    $item->status = $posted['status'];
+                    $model->status = $posted['status'];
+                    break;
+            }
+
+            if($model->save() && $item->save()){
+                $out = ['output' => '', 'message' => ''];
+            }else{
+                $err = $item->getFirstErrors();
+                $map = [];
+                foreach ($err as $key=>$value){
+                    $map["metric-{$key}"] = $value;
+                }
+                $errors = array_merge($model->getFirstErrors(), $map);
+                $out = ['output' => "error", 'message' => $errors];
+            }
+            // return ajax json encoded response and exit
+
+            echo json_encode($out);
+            return;
+        }
+    }
+
+    /**
+     * Deletes an existing MetricItem model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     */
+    public function actionDeleteItem($id)
+    {
+        $model = $this->findRelationModel($id);
+        $backId = $model->metric_id;
+
+        $transaction = \Yii::$app->db->beginTransaction();
+        try
+        {
+            if($model->metricItem->delete())
+            {
+                $transaction->commit();
+
+                GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento eliminado correctamente'));
+            }
+            else
+            {
+                GlobalFunctions::addFlashMessage('danger',Yii::t('backend','Error eliminando el elemento'));
+            }
+        }
+        catch (Exception $e)
+        {
+            GlobalFunctions::addFlashMessage('danger',Yii::t('backend','Error, ha ocurrido una excepción eliminando el elemento'));
+            $transaction->rollBack();
+        }
+
+        return $this->redirect(['view', 'id'=>$backId]);
+
+    }
+
+    /**
+     * Finds the MetricMetricItem model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return MetricMetricItem the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findRelationModel($id)
+    {
+        if (($model = MetricMetricItem::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('backend','La página solicitada no existe'));
+        }
+    }
 }

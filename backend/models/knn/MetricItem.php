@@ -4,6 +4,7 @@ namespace backend\models\knn;
 
 use Yii;
 use backend\models\BaseModel;
+use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use common\models\GlobalFunctions;
 use yii\helpers\Html;
@@ -111,4 +112,14 @@ class MetricItem extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    /**
+     * Returns all MetricItems related to a a Metric
+     * @param $metricId int Metric ID
+     * @return MetricItem[]
+     */
+    public static function getItemsForMetric($metricId)
+    {
+        $items = MetricMetricItem::findAll(['metric_id'=>$metricId]);
+        return static::findAll(['IN', 'id', ArrayHelper::getColumn($items, 'metric_id')]);
+    }
 }

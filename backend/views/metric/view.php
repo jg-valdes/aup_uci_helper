@@ -4,9 +4,13 @@ use yii\helpers\Html;
 use common\widgets\DetailView;
 use mdm\admin\components\Helper;
 use common\models\GlobalFunctions;
+use kartik\tabs\TabsX;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\knn\Metric */
+/* @var $modelItem \backend\models\knn\MetricItem */
+/* @var $modelRelation \backend\models\knn\MetricMetricItem */
+/* @var $metricItemsDataProvider \yii\data\ActiveDataProvider */
 
 $controllerId = '/'.$this->context->uniqueId.'/';
 $this->title = $model->name;
@@ -33,36 +37,35 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
     <div class="box-body">
-        <?= DetailView::widget([
-            'model' => $model,
-            'labelColOptions' => ['style' => 'width: 40%'],
-            'attributes' => [
-                'id',
-                'name',
+        <div class="col-md-12 col-lg12 col-xs-12 col-sm-12">
+            <?php
+            $content1 = $this->render('_tab_general_data', ['model' => $model]);
+            $content2 = $this->render('_tab_metric_items', [
+                'model' => $model,
+                'modelItem'=> $modelItem,
+                'modelRelation' => $modelRelation,
+                'metricItemsDataProvider' => $metricItemsDataProvider
+            ]);
+
+            $items = [
                 [
-                    'attribute'=> 'description',
-                    'value'=> $model->getDescription(),
-                    'format'=> 'html',
+                    'label'=> Yii::t('backend', 'Datos generales'),
+                    'content'=>$content1,
+                    'active'=>true
                 ],
-                
                 [
-                    'attribute'=> 'status',
-                    'value'=> GlobalFunctions::getStatusValue($model->status),
-                    'format'=> 'html',
+                    'label'=>Yii::t('backend', 'Opciones'),
+                    'content'=>$content2,
                 ],
-                
-                [
-                    'attribute'=> 'created_at',
-                    'value'=> GlobalFunctions::formatDateToShowInSystem($model->created_at),
-                    'format'=> 'html',
-                ],
-                
-                [
-                    'attribute'=> 'updated_at',
-                    'value'=> GlobalFunctions::formatDateToShowInSystem($model->updated_at),
-                    'format'=> 'html',
-                ],
-                
-            ],
-        ]) ?>
+            ];
+
+            echo TabsX::widget([
+                'items' => $items,
+                'position' => TabsX::POS_ABOVE,
+                'encodeLabels' => false
+            ]);
+            ?>
+
+        </div>
+
     </div>
