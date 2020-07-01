@@ -80,6 +80,7 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
                                 return [
                                     'size' => 'md',
                                     'inputType' => \kartik\editable\Editable::INPUT_TEXT,
+                                    'pjaxContainerId' => 'items-pjax',
                                     'options' => ["value" => $model->getMetricItemName()],
                                     'formOptions' => [
                                         'action' => ['/metric/update-item']
@@ -100,6 +101,7 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
                                 return [
                                     'size' => 'md',
                                     'inputType' => \kartik\editable\Editable::INPUT_TEXT,
+                                    'pjaxContainerId' => 'items-pjax',
                                     'formOptions' => [
                                         'action' => ['/metric/update-item']
                                     ],
@@ -120,11 +122,14 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
                             'editableOptions' => function ($model, $key, $index) {
                                 return [
                                     'inputType' => Editable::INPUT_SWITCH,
+                                    'pjaxContainerId' => 'items-pjax',
                                     'size' => 'sm',
-                                    'options' => ['class' => 'form-control'],
-                                    'pluginOptions' => [
-                                        "onText" => Yii::t("backend", "Activo"),
-                                        "offText" => Yii::t("backend", "Inactivo")
+                                    'options' => [
+                                        'class' => 'form-control',
+                                        'pluginOptions' => [
+                                            "onText" => Yii::t("backend", "Activo"),
+                                            "offText" => Yii::t("backend", "Inactivo")
+                                        ],
                                     ],
                                     'formOptions' => [
                                         'action' => ['/metric/update-item']
@@ -208,7 +213,7 @@ $js = <<<JS
             .done(function(response) {
                 if (response.data.success) {
                     $("#metricItemModal").modal('hide');
-                    $.pjax.reload({container: '#gridMetricItems', timeout: 2000});
+                    $.pjax.reload({container: '#items-pjax', timeout: 2000});
                     $(form).trigger('reset');
                     assignFormTrigger();
                 }else{
@@ -220,7 +225,7 @@ $js = <<<JS
                 }
             })
             .fail(function(e) {
-                console.log("No conection to server");
+                console.log("No connection to server");
                 console.log(e);
                 $("#metricItemModal").modal('hide');
                 assignFormTrigger();

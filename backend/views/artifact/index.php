@@ -114,9 +114,10 @@ $custom_elements_gridview->setActionColumn($my_custom_action_column);
 						'pluginOptions'=>['allowClear'=>true],
 						'options'=>['multiple'=>false],
 					],
-					'value'=> 'process.name',
+					'value'=> function($model){ return $model->getProcessLink();},
 					'filterInputOptions'=>['placeholder'=> '------'],
 					'hAlign'=>'center',
+					'width'=> '15%'
 				],
 
                 [
@@ -139,6 +140,7 @@ $custom_elements_gridview->setActionColumn($my_custom_action_column);
                         return GlobalFunctions::formatNumber($data->order);
                     },
                     'format' => 'html',
+                    'width'=> '8%'
                 ],
 				[
 					'attribute'=>'name',
@@ -147,7 +149,8 @@ $custom_elements_gridview->setActionColumn($my_custom_action_column);
 					'format'=> 'html',
 					'value' => function ($data) {
 						return $data->name;
-					}
+					},
+					'width'=> '25%'
 				],
                                  
                 [
@@ -165,6 +168,7 @@ $custom_elements_gridview->setActionColumn($my_custom_action_column);
                         'pluginOptions'=>['allowClear'=>true],
                     ],
                     'filterInputOptions'=>['placeholder'=>'------'],
+                    'width'=> '10%'
                 ],
                                      
 				[
@@ -192,7 +196,8 @@ $custom_elements_gridview->setActionColumn($my_custom_action_column);
                                 }
                             }',
                         ]
-					])
+					]),
+                    'width'=> '15%'
 				],
 
 				$custom_elements_gridview->getActionColumn(),

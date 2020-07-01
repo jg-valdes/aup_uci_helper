@@ -39,9 +39,9 @@ use common\models\User;
                         'url' => ['/scenario/index'],
                     ],
                     [
-                        'label' => Yii::t("backend", "Métricas"),
-                        'icon' => 'arrows',
-                        'url' => ['/metric/index'],
+                        'label' => Yii::t("backend", "Disciplinas"),
+                        'icon' => 'circle-o',
+                        'url' => ['/discipline/index'],
                     ],
                     [
                         'label' => Yii::t("backend", "Procesos"),
@@ -49,21 +49,15 @@ use common\models\User;
                         'url' => ['/process/index'],
                     ],
                     [
-                        'label' => Yii::t("backend", "Artefactos"),
-                        'icon' => 'file-word-o',
-                        'url' => ['/artifact/index'],
-                    ],
-                    [
                         'label' => Yii::t("backend", "Roles AUP"),
                         'icon' => 'users',
                         'url' => ['/aup-role/index'],
                     ],
                     [
-                        'label' => Yii::t("backend", "Disciplinas"),
-                        'icon' => 'circle-o',
-                        'url' => ['/discipline/index'],
+                        'label' => Yii::t("backend", "Artefactos"),
+                        'icon' => 'file-word-o',
+                        'url' => ['/artifact/index'],
                     ],
-
                 ],
             ],
 
@@ -113,6 +107,11 @@ use common\models\User;
                         'label' => Yii::t('backend', 'Base de Casos'),
                         'icon' => 'database',
                         'url' => ['/ia-case/index'],
+                    ],
+                    [
+                        'label' => Yii::t("backend", "Métricas"),
+                        'icon' => 'arrows',
+                        'url' => ['/metric/index'],
                     ],
                     [
                         'label' => Yii::t('backend', 'Grupos de FAQ'),
