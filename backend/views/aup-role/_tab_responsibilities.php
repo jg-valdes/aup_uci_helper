@@ -8,21 +8,20 @@ use yii\helpers\Url;
 use kartik\editable\Editable;
 
 /* @var $this yii\web\View */
-/* @var $model \backend\models\knn\Metric */
-/* @var $modelItem \backend\models\knn\MetricItem */
-/* @var $modelRelation \backend\models\knn\MetricMetricItem */
-/* @var $metricItemsDataProvider \yii\data\ActiveDataProvider */
+/* @var $model \backend\models\business\RoleResponsibility */
+/* @var $modelResponsibility \backend\models\business\RoleResponsibility */
+/* @var $responsibilityDataProvider \yii\data\ActiveDataProvider */
 
 $create_button = Html::button('<i class="fa fa-plus"></i> ' . Yii::t('backend', 'Crear'), [
     'data-toggle' => 'modal',
-    'data-target' => '#metricItemModal',
+    'data-target' => '#responsibilityModal',
     'class' => 'btn btn-success btn-flat margin',
-    'title' => Yii::t('backend', 'Crear') . ' ' . Yii::t('backend', 'Opción')]);
+    'title' => Yii::t('backend', 'Crear') . ' ' . Yii::t('backend', 'Responsabilidad')]);
 
 $custom_template_action_column = ['delete'];
 $custom_buttons_action_column = [
     'delete' => function ($url, $model) {
-        $url_action = Url::to(['/metric/delete-item', 'id' => $model->id]);
+        $url_action = Url::to(['/aup-role/delete-responsibility', 'id' => $model->id]);
         $options = [
             'class' => 'btn btn-xs btn-danger btn-flat',
             'title' => Yii::t('yii', 'Delete'),
@@ -42,12 +41,11 @@ $panel = [
     'after' => false,
     'before' => '',
 ];
-$custom_elements_gridview = new Custom_Settings_Column_GridView($create_button, $metricItemsDataProvider, $custom_template_action_column, $custom_buttons_action_column);
+$custom_elements_gridview = new Custom_Settings_Column_GridView($create_button, $responsibilityDataProvider, $custom_template_action_column, $custom_buttons_action_column);
 
 $custom_elements_gridview->toolbar = [['content' => $create_button]];
 $custom_elements_gridview->setPanel($panel);
 $custom_elements_gridview->togle_data_options = $toggle_data_options;
-
 
 ?>
 
@@ -59,8 +57,8 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
             <div class="col-sm-12 col-md-12 col-xl-12">
                 <?php \yii\widgets\Pjax::begin(['id' => 'items-pjax']); ?>
                 <?= GridView::widget([
-                    'id' => 'gridMetricItems',
-                    'dataProvider' => $metricItemsDataProvider,
+                    'id' => 'gridRoleResponsibilities',
+                    'dataProvider' => $responsibilityDataProvider,
                     'responsiveWrap' => false,
                     'hover' => true,
                     'pager' => [
@@ -72,9 +70,9 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
                     'columns' => [
                         $custom_elements_gridview->getSerialColumn(),
                         [
-                            'attribute' => 'metric_item_id',
+                            'attribute' => 'name',
                             'value' => function ($data) {
-                                return $data->getMetricItemName();
+                                return $data->name;
                             },
                             'class' => 'kartik\grid\EditableColumn',
                             'editableOptions' => function ($model, $key, $index) {
@@ -82,32 +80,12 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
                                     'size' => 'md',
                                     'inputType' => \kartik\editable\Editable::INPUT_TEXT,
                                     'pjaxContainerId' => 'items-pjax',
-                                    'options' => ["value" => $model->getMetricItemName()],
                                     'formOptions' => [
-                                        'action' => ['/metric/update-item']
-                                    ],
-
-                                ];
-
-                            },
-
-                            'headerOptions' => ['class' => 'custom_width'],
-                            'contentOptions' => ['class' => 'custom_width'],
-                        ],
-
-                        [
-                            'attribute' => 'weight',
-                            'class' => 'kartik\grid\EditableColumn',
-                            'editableOptions' => function ($model, $key, $index) {
-                                return [
-                                    'size' => 'md',
-                                    'inputType' => \kartik\editable\Editable::INPUT_TEXT,
-                                    'pjaxContainerId' => 'items-pjax',
-                                    'formOptions' => [
-                                        'action' => ['/metric/update-item']
+                                        'action' => ['/aup-role/update-responsibility']
                                     ],
                                 ];
                             },
+
                             'headerOptions' => ['class' => 'custom_width'],
                             'contentOptions' => ['class' => 'custom_width'],
                         ],
@@ -133,12 +111,14 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
                                         ],
                                     ],
                                     'formOptions' => [
-                                        'action' => ['/metric/update-item']
+                                        'action' => ['/aup-role/update-responsibility']
                                     ],
                                 ];
                             },
                             'headerOptions' => ['class' => 'custom_width'],
                             'contentOptions' => ['class' => 'custom_width'],
+                            'hAlign' => 'center',
+                            'vAlign' => 'center',
                         ],
 
                         [
@@ -148,6 +128,7 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
                             },
                             'contentOptions' => ['class' => 'kv-align-middle'],
                             'hAlign' => 'center',
+                            'vAlign' => 'center',
                         ],
                         $custom_elements_gridview->getActionColumn(),
 
@@ -164,21 +145,21 @@ $custom_elements_gridview->togle_data_options = $toggle_data_options;
         <!-- /.box-body -->
     </div>
 
-    <div class="modal fade" id="metricItemModal" tabindex="-1" role="dialog" aria-labelledby="ModalMetricItem">
+    <div class="modal fade" id="responsibilityModal" tabindex="-1" role="dialog" aria-labelledby="ModalRoleResponsibility">
         <div class="modal-dialog" role="document" style="width: 70% !important;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"
                             aria-label="<?= Yii::t("backend", "Cerrar"); ?>"><span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="metricItemModalLabel"><?= Yii::t("backend", "Agregar Opción"); ?></h4>
+                    <h4 class="modal-title" id="metricItemModalLabel"><?= Yii::t("backend", "Agregar Responsabilidad"); ?></h4>
                 </div>
                 <?php $form = \kartik\form\ActiveForm::begin([
-                    'id' => 'metric-item-form',
-                    'action' => ['/metric/create-item-ajax', 'id' => $model->id]
+                    'id' => 'role-responsibility-form',
+                    'action' => ['/aup-role/create-responsibility-ajax', 'id' => $model->id]
                 ]); ?>
                 <div class="modal-body">
-                    <?= $this->render("_form_metric_item", ['item' => $modelItem, 'relation' => $modelRelation, 'form' => $form]); ?>
+                    <?= $this->render("_form_responsibility", ['model' => $modelResponsibility, 'form' => $form]); ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default"
@@ -197,7 +178,7 @@ $js = <<<JS
     $(function(){
         
         function assignFormTrigger(){
-            $("#metric-item-form").on("beforeSubmit", function(event) {
+            $("#role-responsibility-form").on("beforeSubmit", function(event) {
             event.preventDefault(); // stopping submitting
         
             let form = this;
@@ -213,22 +194,22 @@ $js = <<<JS
             })
             .done(function(response) {
                 if (response.data.success) {
-                    $("#metricItemModal").modal('hide');
+                    $("#responsibilityModal").modal('hide');
                     $.pjax.reload({container: '#items-pjax', timeout: 2000});
                     $(form).trigger('reset');
                     assignFormTrigger();
                 }else{
                     if(response.data.hasOwnProperty('errors'))
                     $.each(response.data.errors, function(key, val) {
-                        $("#metric-metric-item-"+key).after("<div class=\"help-block\">"+val+"</div>");
-                        $("#metric-metric-item-"+key).closest(".form-group").addClass("has-error");
+                        $("#role-responsibility-"+key).after("<div class=\"help-block\">"+val+"</div>");
+                        $("#role-responsibility-"+key).closest(".form-group").addClass("has-error");
                         });
                 }
             })
             .fail(function(e) {
                 console.log("No connection to server");
                 console.log(e);
-                $("#metricItemModal").modal('hide');
+                $("#responsibilityModal").modal('hide');
                 assignFormTrigger();
             });
         

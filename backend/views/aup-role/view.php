@@ -4,9 +4,12 @@ use yii\helpers\Html;
 use common\widgets\DetailView;
 use mdm\admin\components\Helper;
 use common\models\GlobalFunctions;
+use kartik\tabs\TabsX;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\business\AupRole */
+/* @var $modelResponsibility backend\models\business\RoleResponsibility */
+/* @var $responsibilityDataProvider \yii\data\ActiveDataProvider */
 
 $controllerId = '/'.$this->context->uniqueId.'/';
 $this->title = $model->name;
@@ -33,41 +36,34 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
     <div class="box-body">
-        <?= DetailView::widget([
-            'model' => $model,
-            'labelColOptions' => ['style' => 'width: 40%'],
-            'attributes' => [
-                'id',
+        <div class="col-md-12 col-lg12 col-xs-12 col-sm-12">
+            <?php
+            $content1 = $this->render('_tab_general_data', ['model' => $model]);
+            $content2 = $this->render('_tab_responsibilities', [
+                'model' => $model,
+                'modelResponsibility'=> $modelResponsibility,
+                'responsibilityDataProvider' => $responsibilityDataProvider
+            ]);
+
+            $items = [
                 [
-                    'attribute'=> 'views',
-                    'value'=> GlobalFunctions::getFormattedViewsCount($model->views, true),
-                    'format'=> 'html',
+                    'label'=> Yii::t('backend', 'Datos generales'),
+                    'content'=>$content1,
+                    'active'=>true
                 ],
-                'name',
                 [
-                    'attribute'=> 'description',
-                    'value'=> $model->getDescription(),
-                    'format'=> 'html',
+                    'label'=>Yii::t('backend', 'Responsabilidades'),
+                    'content'=>$content2,
                 ],
-                
-                [
-                    'attribute'=> 'status',
-                    'value'=> GlobalFunctions::getStatusValue($model->status),
-                    'format'=> 'html',
-                ],
-                
-                [
-                    'attribute'=> 'created_at',
-                    'value'=> GlobalFunctions::formatDateToShowInSystem($model->created_at),
-                    'format'=> 'html',
-                ],
-                
-                [
-                    'attribute'=> 'updated_at',
-                    'value'=> GlobalFunctions::formatDateToShowInSystem($model->updated_at),
-                    'format'=> 'html',
-                ],
-                
-            ],
-        ]) ?>
+            ];
+
+            echo TabsX::widget([
+                'items' => $items,
+                'position' => TabsX::POS_ABOVE,
+                'encodeLabels' => false
+            ]);
+            ?>
+
+        </div>
     </div>
+
