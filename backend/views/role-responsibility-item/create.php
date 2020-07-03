@@ -3,8 +3,8 @@
 /* @var $this yii\web\View */
 /* @var $model backend\models\business\RoleResponsibilityItem */
 
-$this->title = Yii::t('backend', 'Crear').' '. Yii::t('backend', 'Role Responsibility Item');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Role Responsibility Items'), 'url' => ['index']];
+$this->title = Yii::t('backend', 'Crear').' '. Yii::t('backend', 'Elemento de Responsabilidad');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Elementos de Responsabilidad'), 'url' => ['index', 'id'=>$model->role_responsibility_id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="role-responsibility-item-create">

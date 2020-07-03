@@ -18,8 +18,17 @@ $create_button = Html::button('<i class="fa fa-plus"></i> ' . Yii::t('backend', 
     'class' => 'btn btn-success btn-flat margin',
     'title' => Yii::t('backend', 'Crear') . ' ' . Yii::t('backend', 'Responsabilidad')]);
 
-$custom_template_action_column = ['delete'];
+$custom_template_action_column = ['items', 'delete'];
 $custom_buttons_action_column = [
+    'items' => function ($url, $model) {
+        $url_action = Url::to(['/role-responsibility-item/index', 'id' => $model->id]);
+        $options = [
+            'class' => 'btn btn-xs btn-default btn-flat',
+            'title' => Yii::t('backend', 'Elementos'),
+            'data-toggle' => 'tooltip',
+        ];
+        return Html::a('<i class="glyphicon glyphicon-list-alt"></i>', $url_action, $options);
+    },
     'delete' => function ($url, $model) {
         $url_action = Url::to(['/aup-role/delete-responsibility', 'id' => $model->id]);
         $options = [

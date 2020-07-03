@@ -24,49 +24,36 @@ use yii\helpers\ArrayHelper;
  $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <div class="row">
+        <?= $form->field($model, "role_responsibility_id")->hiddenInput()->label(false);?>
         <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
-
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-md-2 col-lg-2 col-xl-2 col-sm-12 col-xs-12">
-
+            <?=
+            $form->field($model,"status")->widget(SwitchInput::classname(), [
+                "type" => SwitchInput::CHECKBOX,
+                "pluginOptions" => [
+                    "onText"=> Yii::t("backend","Activo"),
+                    "offText"=> Yii::t("backend","Inactivo")
+                ]
+            ])
+            ?>
         </div>
         <div class="col-md-12 col-lg-12 col-xl-12 col-sm-12 col-xs-12">
-
+            <?=
+            $form->field($model, "description")->widget(CKEditor::className(), [
+                "preset" => "custom",
+                "clientOptions" => [
+                    "toolbar" => GlobalFunctions::getToolBarForCkEditor(true),
+                ],
+            ])
+            ?>
         </div>
     </div>
-    <?=
-        $form->field($model, "role_responsibility_id")->widget(Select2::classname(), [
-            "data" => RoleResponsibility::getSelectMap(),
-            "language" => Yii::$app->language,
-            "options" => ["placeholder" => "----", "multiple"=>false],
-            "pluginOptions" => [
-                "allowClear" => true
-            ],
-        ]);
-    ?>
-             
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-          
-    <?= 
-        $form->field($model, "description")->widget(CKEditor::className(), [
-            "preset" => "custom",
-            "clientOptions" => [
-                "toolbar" => GlobalFunctions::getToolBarForCkEditor(),
-            ],
-        ])
-    ?>
-             
+
     <?= $form->field($model, 'filename')->textInput(['maxlength' => true]) ?>
          
-    <?=
-        $form->field($model,"status")->widget(SwitchInput::classname(), [
-            "type" => SwitchInput::CHECKBOX,
-            "pluginOptions" => [
-                "onText"=> Yii::t("backend","Activo"),
-                "offText"=> Yii::t("backend","Inactivo")
-            ]
-        ])
-    ?>
+
     
 </div>
 <div class="box-footer">

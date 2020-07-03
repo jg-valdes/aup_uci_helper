@@ -40,7 +40,7 @@ class RoleResponsibilityItemSearch extends RoleResponsibilityItem
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $responsibilityId)
     {
         $query = RoleResponsibilityItem::find();
 
@@ -65,7 +65,7 @@ class RoleResponsibilityItemSearch extends RoleResponsibilityItem
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'role_responsibility_id' => $this->role_responsibility_id,
+            'role_responsibility_id' => $responsibilityId,
             'status' => $this->status,
         ]);
 
@@ -83,6 +83,8 @@ class RoleResponsibilityItemSearch extends RoleResponsibilityItem
 
             $this->created_at = null;
         }
+
+        $query->orderBy('name');
 
         return $dataProvider;
     }

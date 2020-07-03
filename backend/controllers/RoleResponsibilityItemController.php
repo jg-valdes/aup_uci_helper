@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\business\RoleResponsibility;
 use Yii;
 use backend\models\business\RoleResponsibilityItem;
 use backend\models\business\RoleResponsibilityItemSearch;
@@ -35,16 +36,20 @@ class RoleResponsibilityItemController extends Controller
 
     /**
      * Lists all RoleResponsibilityItem models.
+     * @param $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
-    public function actionIndex()
+    public function actionIndex($id)
     {
+        $responsibility = $this->findResponsibilityModel($id);
         $searchModel = new RoleResponsibilityItemSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $responsibility->id);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'responsibility' => $responsibility
         ]);
     }
 
@@ -52,6 +57,7 @@ class RoleResponsibilityItemController extends Controller
      * Displays a single RoleResponsibilityItem model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
@@ -65,11 +71,14 @@ class RoleResponsibilityItemController extends Controller
     /**
      * Creates a new RoleResponsibilityItem model.
      * If creation is successful, the browser will be redirected to the 'index' page.
+     * @param $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
-    public function actionCreate()
+    public function actionCreate($id)
     {
-        $model = new RoleResponsibilityItem();
+        $responsibility = $this->findResponsibilityModel($id);
+        $model = new RoleResponsibilityItem(['status'=>RoleResponsibilityItem::STATUS_ACTIVE, 'role_responsibility_id'=>$responsibility->id]);
 
         if ($model->load(Yii::$app->request->post()))
         {
@@ -83,7 +92,7 @@ class RoleResponsibilityItemController extends Controller
 
                     GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento creado correctamente'));
 
-                    return $this->redirect(['index']);
+                    return $this->redirect(['index', 'id' => $id]);
                 }
                 else
                 {
@@ -108,6 +117,7 @@ class RoleResponsibilityItemController extends Controller
      * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionUpdate($id)
     {
@@ -157,10 +167,13 @@ class RoleResponsibilityItemController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
      */
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        $backID = $model->role_responsibility_id;
 
         $transaction = \Yii::$app->db->beginTransaction();
 
@@ -177,7 +190,7 @@ class RoleResponsibilityItemController extends Controller
                 GlobalFunctions::addFlashMessage('danger',Yii::t('backend','Error eliminando el elemento'));
             }
 
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'id'=>$backID]);
         }
         catch (Exception $e)
         {
@@ -203,14 +216,33 @@ class RoleResponsibilityItemController extends Controller
     }
 
     /**
-    * Bulk Deletes for existing RoleResponsibilityItem models.
-    * If deletion is successful, the browser will be redirected to the 'index' page.
-    * @return mixed
-    */
+     * Finds the RoleResponsibility model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return RoleResponsibility the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findResponsibilityModel($id)
+    {
+        if (($model = RoleResponsibility::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException(Yii::t('backend','La página solicitada no existe'));
+        }
+    }
+
+    /**
+     * Bulk Deletes for existing RoleResponsibilityItem models.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     */
     public function actionMultiple_delete()
     {
         if(Yii::$app->request->post('row_id'))
         {
+            $backID = null;
             $transaction = \Yii::$app->db->beginTransaction();
 
             try
@@ -225,7 +257,7 @@ class RoleResponsibilityItemController extends Controller
                 foreach ($pk as $key => $value)
                 {
                     $model= $this->findModel($value);
-
+                    $backID = $model->role_responsibility_id;
                     if(!$model->delete())
                     {
                         $deleteOK=false;
@@ -275,7 +307,7 @@ class RoleResponsibilityItemController extends Controller
                 $transaction->rollBack();
             }
 
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'id'=>$backID]);
         }
     }
 

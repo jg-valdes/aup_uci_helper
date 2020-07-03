@@ -119,4 +119,28 @@ class RoleResponsibilityItem extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    /**
+     * Returns a formatted link for related discipline or a no value span message
+     * @return string
+     */
+    public function getRoleResponsibilityLink()
+    {
+        if(isset($this->roleResponsibility)){
+            return $this->roleResponsibility->getIDLinkForThisModel();
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
+
+
+    /**
+     * Returns description value or a no value span message
+     * @return string
+     */
+    public function getDescription()
+    {
+        if(isset($this->description) && !empty($this->description)){
+            return $this->description;
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
 }
