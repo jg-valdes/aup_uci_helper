@@ -23,6 +23,8 @@ class m200622_110639_create_role_responsibility_item_table extends Migration
             'name' => $this->string(255)->notNull(),
             'description' => $this->text(),
             'filename' => $this->string(255),
+            'downloads' => $this->integer(10)->notNull()->defaultValue(0),
+            'views' => $this->integer(10)->notNull()->defaultValue(0),
             'status' => $this->tinyInteger(1)->notNull()->defaultValue('1'),
             'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),

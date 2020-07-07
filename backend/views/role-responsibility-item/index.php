@@ -32,6 +32,48 @@ $create_button='';
 	}
 
 	$custom_elements_gridview = new Custom_Settings_Column_GridView($create_button,$dataProvider);
+
+$my_custom_action_column = [
+    'class' => 'kartik\grid\ActionColumn',
+    'dropdown' => false,
+    'vAlign' => 'middle',
+    'template' => Helper::filterActionColumn(['download', 'view', 'update', 'delete']),
+    'buttons' => [
+        'download' => function ($url, $model) {
+            $url_action = Url::to(['/role-responsibility-item/download', 'id' => $model->id]);
+            $options = [
+                'class' => 'btn btn-xs btn-default btn-flat',
+                'title' => Yii::t('common','Descargar'),
+                'data-toggle' => 'tooltip',
+                'data-pjax' => 0
+            ];
+            return Html::a('<i class="glyphicon glyphicon-download"></i>', $url_action, $options);
+        },
+    ],
+    'viewOptions' => [
+        'class' => 'btn btn-xs btn-default btn-flat',
+        'title' => Yii::t('yii','View'),
+        'data-toggle' => 'tooltip',
+    ],
+    'updateOptions' => [
+        'class' => 'btn btn-xs btn-default btn-flat',
+        'title' => Yii::t('yii','Update'),
+        'data-toggle' => 'tooltip',
+    ],
+    'deleteOptions' => [
+        'class' => 'btn btn-xs btn-danger btn-flat',
+        'title' => Yii::t('yii','Delete'),
+        'data-toggle' => 'tooltip',
+        'data-confirm' => Yii::t('backend', '¿Seguro desea eliminar este elemento?'),
+    ],
+    'visibleButtons' => [
+        'download' => function ($model, $key, $index) {
+            return $model->hasResource();
+        }
+    ]
+
+];
+$custom_elements_gridview->setActionColumn($my_custom_action_column);
 ?>
 
     <div class="box-body">

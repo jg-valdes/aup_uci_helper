@@ -20,6 +20,10 @@ $this->params['breadcrumbs'][] = $this->title;
             echo Html::a('<i class="fa fa-pencil"></i> '.Yii::t('yii','Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-default btn-flat margin']);
         }
 
+        if($model->hasResource()){
+            echo Html::a('<i class="fa fa-download"></i> '.Yii::t('backend','Descargar'), ['download', 'id'=>$model->id, 'fromView'=>true], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend','Descargar')]);
+        }
+
         echo Html::a('<i class="fa fa-remove"></i> '.Yii::t('backend','Cancelar'), ['index', 'id'=>$model->role_responsibility_id], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend','Cancelar')]);
 
         if (Helper::checkRoute($controllerId . 'delete')) {
@@ -42,6 +46,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute'=> 'role_responsibility_id',
                     'value'=> $model->getRoleResponsibilityLink(),
+                    'format'=> 'html',
+                ],
+                [
+                    'attribute'=> 'views',
+                    'value'=> GlobalFunctions::getFormattedViewsCount($model->views, true),
+                    'format'=> 'html',
+                ],
+
+                [
+                    'attribute'=> 'downloads',
+                    'value'=> GlobalFunctions::getFormattedDownsCount($model->downloads, true),
                     'format'=> 'html',
                 ],
         

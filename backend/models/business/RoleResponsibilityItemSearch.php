@@ -37,6 +37,7 @@ class RoleResponsibilityItemSearch extends RoleResponsibilityItem
      * Creates data provider instance with search query applied
      *
      * @param array $params
+     * @param int $responsibilityId RoleResponsibility ID
      *
      * @return ActiveDataProvider
      */

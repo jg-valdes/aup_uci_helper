@@ -86,8 +86,14 @@ class RoleResponsibilityItemController extends Controller
 
             try
             {
+                $resource = $model->uploadResource();
+
                 if($model->save())
                 {
+                    if($resource){
+                        $path = $model->getResourceFile();
+                        $resource->saveAs($path);
+                    }
                     $transaction->commit();
 
                     GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento creado correctamente'));
@@ -125,14 +131,40 @@ class RoleResponsibilityItemController extends Controller
 
         if(isset($model) && !empty($model))
         {
+            $old_resource_file = $model->getResourceFile();
+            $old_resource = $model->filename;
+
             if ($model->load(Yii::$app->request->post()))
             {
                 $transaction = \Yii::$app->db->beginTransaction();
 
                 try
                 {
+                    $resource = $model->uploadResource();
+
+                    // revert back if no valid file instance uploaded
+                    if ($resource === false) {
+                        $model->filename = $old_resource;
+                    }
+
                     if($model->save())
                     {
+                        // upload only if valid uploaded file instance found by main logo
+                        if ($resource !== false) // delete old and overwrite
+                        {
+                            if(file_exists($old_resource_file))
+                            {
+                                try{
+                                    unlink($old_resource_file);
+                                }catch (\Exception $exception){
+                                    Yii::info("Error deleting resource on RoleResponsibilityItem: " . $old_resource_file);
+                                    Yii::info($exception->getMessage());
+                                }
+                            }
+
+                            $path = $model->getResourceFile();
+                            $resource->saveAs($path);
+                        }
                         $transaction->commit();
 
                         GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
@@ -181,6 +213,7 @@ class RoleResponsibilityItemController extends Controller
         {
             if($model->delete())
             {
+                $model->deleteResource();
                 $transaction->commit();
 
                 GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento eliminado correctamente'));
@@ -263,6 +296,8 @@ class RoleResponsibilityItemController extends Controller
                         $deleteOK=false;
                         $nameErrorDelete= $nameErrorDelete.'['.$model->name.'] ';
                         $contNameErrorDelete++;
+                    } else {
+                        $model->deleteResource();
                     }
                 }
 
@@ -309,6 +344,28 @@ class RoleResponsibilityItemController extends Controller
 
             return $this->redirect(['index', 'id'=>$backID]);
         }
+    }
+
+    /**
+     * Download an existing Resource model.
+     * If download is successful, the downs counter is updated on DB.
+     * @param integer $id
+     * @param bool $fromView
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public function actionDownload($id, $fromView = false)
+    {
+        $model = $this->findModel($id);
+        $attachName = str_replace(" ", "_", $model->roleResponsibility->name . "_" . $model->name) . "." . $model->getResourceExtension();
+
+        set_time_limit(5 * 60);
+        $route = $model->getResourceFile();
+        $model->updateAttributes(['downloads'=>$model->downloads+1]);
+        Yii::$app->response->sendFile($route, $attachName)->send();
+
+        return $fromView ? $this->redirect(['view', 'id' => $id]) : $this->redirect(['index']);
+
     }
 
 }

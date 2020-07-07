@@ -10,7 +10,7 @@ use kartik\date\DatePicker;
 use kartik\number\NumberControl;
 use common\models\GlobalFunctions;
 use kartik\datecontrol\DateControl;
-use backend\models\RoleResponsibility;
+use backend\models\business\RoleResponsibilityItem;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 
@@ -39,7 +39,7 @@ use yii\helpers\ArrayHelper;
             ])
             ?>
         </div>
-        <div class="col-md-12 col-lg-12 col-xl-12 col-sm-12 col-xs-12">
+        <div class="col-md-9 col-lg-9 col-xl-9 col-sm-12 col-xs-12">
             <?=
             $form->field($model, "description")->widget(CKEditor::className(), [
                 "preset" => "custom",
@@ -49,16 +49,20 @@ use yii\helpers\ArrayHelper;
             ])
             ?>
         </div>
+        <div class="col-md-3 col-lg-3 col-xl-3 col-sm-12 col-xs-12">
+            <?=
+            $form->field($model, "filename")->widget(FileInput::classname(), [
+                "language" => Yii::$app->language,
+                'pluginOptions'=> GlobalFunctions::getConfigFileInputWithPreview($model->getResourceFile(), $model->name, RoleResponsibilityItem::getAllowedExtensions())
+            ]);
+            ?>
+        </div>
     </div>
 
-    <?= $form->field($model, 'filename')->textInput(['maxlength' => true]) ?>
-         
-
-    
 </div>
 <div class="box-footer">
     <?= Html::submitButton($model->isNewRecord ? '<i class="fa fa-plus"></i> '.Yii::t('backend','Crear') : '<i class="fa fa-pencil"></i> '.Yii::t('yii', 'Update'), ['class' => 'btn btn-default btn-flat']) ?>
-    <?= Html::a('<i class="fa fa-remove"></i> '.Yii::t('backend','Cancelar'),['index'], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend','Cancelar')]) ?>
+    <?= Html::a('<i class="fa fa-remove"></i> '.Yii::t('backend','Cancelar'),['index', 'id'=>$model->role_responsibility_id], ['class' => 'btn btn-default btn-flat margin', 'title' => Yii::t('backend','Cancelar')]) ?>
 </div>
 <?php ActiveForm::end(); ?>
 

@@ -53,6 +53,7 @@ class ArtifactController extends Controller
      * Displays a single Artifact model.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
@@ -344,12 +345,11 @@ class ArtifactController extends Controller
      * @param bool $fromView
      * @return mixed
      * @throws NotFoundHttpException
-     * @throws \yii\db\Exception
      */
     public function actionDownload($id, $fromView = false)
     {
         $model = $this->findModel($id);
-            $attachName = $model->process->name . "_" . str_replace(" ", "_", $model->name . "." . $model->getResourceExtension());
+            $attachName = str_replace(" ", "_", $model->process->name . "_" . $model->name) . "." . $model->getResourceExtension();
 
             set_time_limit(5 * 60);
             $route = $model->getResourceFile();
