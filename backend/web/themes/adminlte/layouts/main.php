@@ -49,6 +49,8 @@ else {
     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 
     $this->registerCssFile("@web/css/customYii.css");
+    $this->registerCssFile("@web/plugins/treejs/mdb.min.css");
+    $this->registerCssFile("@web/plugins/treejs/mdb.lite.min.css");
 
     ?>
     <?php $this->beginPage() ?>
@@ -99,6 +101,7 @@ else {
     $this->registerJsFile('@web/js/Chart.min.js');
     $this->registerJsFile('@web/js/demo.js');
     $this->registerJsFile('@web/js/customJS.js');
+    $this->registerJsFile('@web/plugins/treejs/treeview.js');
 
     ?>
 
