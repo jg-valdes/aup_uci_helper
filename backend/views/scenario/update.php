@@ -2,6 +2,8 @@
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\business\Scenario */
+/* @var $items_selected array of selected Artifacts */
+/* @var $items_artifacts array of Artifacts map */
 
 $this->title = Yii::t('backend', 'Actualizar').' '. Yii::t('backend', 'Escenario').': '. $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('backend', 'Escenarios'), 'url' => ['index']];
@@ -12,6 +14,8 @@ $this->params['breadcrumbs'][] = Yii::t('backend', 'Actualizar');
 
     <?= $this->render('_form', [
         'model' => $model,
+        'items_selected' => $items_selected,
+        'items_artifacts' => $items_artifacts,
     ]) ?>
 
 </div>

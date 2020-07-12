@@ -26,6 +26,7 @@ use yii\helpers\Html;
  */
 class Scenario extends BaseModel
 {
+    public $artifacts;
 
     /**
      * {@inheritdoc}
@@ -44,7 +45,7 @@ class Scenario extends BaseModel
             [['name'], 'required'],
             [['description'], 'string'],
             [['status', 'views'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'artifacts'], 'safe'],
             [['name'], 'string', 'max' => 255],
             [['name', 'description', 'status'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
         ];
@@ -63,6 +64,7 @@ class Scenario extends BaseModel
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
+            'artifacts' => Yii::t('backend', 'Artefactos'),
         ];
     }
 
@@ -124,5 +126,24 @@ class Scenario extends BaseModel
             return $this->description;
         }
         return GlobalFunctions::getNoValueSpan();
+    }
+
+    /**
+     * Return a concatenated span labels with related Artifact links
+     * @return string
+     */
+    public function getArtifactsLink()
+    {
+        $artifactsLink = [];
+        foreach (ScenarioArtifact::getRelationsMapForScenario($this->id) as $id=>$name){
+            $link = Html::a("<span class='label label-default'>{$name}</span>", ['/artifact/view', 'id'=>$id]);
+            array_push($artifactsLink, $link);
+        }
+
+        if(empty($artifactsLink)){
+            return GlobalFunctions::getNoValueSpan();
+        }
+
+        return implode(" ", $artifactsLink);
     }
 }

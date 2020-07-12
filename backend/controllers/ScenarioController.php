@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\business\Artifact;
+use backend\models\business\ScenarioArtifact;
 use Yii;
 use backend\models\business\Scenario;
 use backend\models\business\ScenarioSearch;
@@ -71,14 +73,32 @@ class ScenarioController extends Controller
     {
         $model = new Scenario(['status'=>Scenario::STATUS_ACTIVE]);
 
+        $artifacts_selected = [];
+        $list_artifacts = Artifact::getSelectMap();
+
+        $items_artifacts = [];
+        foreach ($list_artifacts AS $key => $value)
+        {
+            $items_artifacts[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
         if ($model->load(Yii::$app->request->post()))
         {
             $transaction = \Yii::$app->db->beginTransaction();
 
             try
             {
+                $artifacts = explode(',',$model->artifacts);
                 if($model->save())
                 {
+                    foreach ($artifacts AS $index => $artifactId)
+                    {
+                        ScenarioArtifact::addRelation($model->id, $artifactId);
+                    }
+
                     $transaction->commit();
 
                     GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento creado correctamente'));
@@ -99,6 +119,8 @@ class ScenarioController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'items_selected' => $artifacts_selected,
+            'items_artifacts' => $items_artifacts,
         ]);
 
     }
@@ -108,10 +130,38 @@ class ScenarioController extends Controller
      * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
+        $list_artifacts_selected = ScenarioArtifact::getRelationsMapForScenario($id);
+        $list_artifacts = Artifact::getSelectMap();
+        $list_artifacts = array_diff($list_artifacts, $list_artifacts_selected);
+
+        $items_artifacts = [];
+        foreach ($list_artifacts AS $key => $value)
+        {
+            $items_artifacts[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
+        $artifacts_selected = [];
+        $old_selected = [];
+
+        foreach ($list_artifacts_selected AS $key => $value)
+        {
+            $old_selected[] = "{$key}";
+
+            $artifacts_selected[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
 
         if(isset($model) && !empty($model))
         {
@@ -121,8 +171,25 @@ class ScenarioController extends Controller
 
                 try
                 {
+                    $artifacts = explode(',',$model->artifacts);
                     if($model->save())
                     {
+                        $toRemove = array_diff($old_selected, $artifacts);
+                        if(isset($toRemove) && !empty($toRemove))
+                        {
+                            foreach ($toRemove as $item)
+                            {
+                                ScenarioArtifact::deleteRelation($model->id, $item);
+                            }
+                        }
+
+                        if(isset($artifacts) && !empty($artifacts)){
+                            foreach ($artifacts AS $index => $item)
+                            {
+                                ScenarioArtifact::addRelation($model->id, $item);
+                            }
+                        }
+
                         $transaction->commit();
 
                         GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
@@ -148,6 +215,8 @@ class ScenarioController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'items_selected' => $artifacts_selected,
+            'items_artifacts' => $items_artifacts,
         ]);
 
     }

@@ -167,6 +167,9 @@ class Artifact extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    /**
+     * @return string span link to related Process
+     */
     public function getProcessLink()
     {
         if(isset($this->process)){
@@ -175,6 +178,10 @@ class Artifact extends BaseModel
         return GlobalFunctions::getNoValueSpan();
     }
 
+    /**
+     * Return a concatenated span labels with related Scenario links
+     * @return string
+     */
     public function getScenariosLink()
     {
         $scenariosLink = [];
@@ -183,6 +190,9 @@ class Artifact extends BaseModel
             array_push($scenariosLink, $link);
         }
 
+        if(empty($scenariosLink)){
+            return GlobalFunctions::getNoValueSpan();
+        }
         return implode(" ", $scenariosLink);
     }
 

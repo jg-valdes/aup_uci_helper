@@ -45,6 +45,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'name',
                 [
+                    'attribute'=> 'artifacts',
+                    'value'=> $model->getArtifactsLink(),
+                    'format'=> 'html',
+                ],
+                [
                     'attribute'=> 'description',
                     'value'=> $model->getDescription(),
                     'format'=> 'html',
