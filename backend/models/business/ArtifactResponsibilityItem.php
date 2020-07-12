@@ -114,4 +114,122 @@ class ArtifactResponsibilityItem extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    /**
+     * @param $itemId int RoleResponsibilityItem ID
+     * @param $artifactId int Artifact ID
+     * @return bool
+     */
+    public static function addRelation($itemId, $artifactId)
+    {
+        return (new self([
+            'status' => self::STATUS_ACTIVE,
+            'artifact_id' => $artifactId,
+            'role_responsibility_item_id' => $itemId
+        ]))->save();
+    }
+
+    /**
+     * @param $itemId int RoleResponsibilityItem ID
+     * @param $artifactId int Artifact ID
+     * @return bool|false|int
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public static function deleteRelation($itemId, $artifactId)
+    {
+        if(self::existRelation($itemId, $artifactId)){
+            return static::findOne(['artifact_id' => $artifactId, 'role_responsibility_item_id' => $itemId])->delete();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $itemId int RoleResponsibilityItem ID
+     * @param $artifactId int Artifact ID
+     * @return bool
+     */
+    public static function existRelation($itemId, $artifactId)
+    {
+        return static::find()->where(['artifact_id' => $artifactId, 'role_responsibility_item_id' => $itemId])->exists();
+    }
+
+    /**
+     * Returns all rows of Artifacts related to a RoleResponsibilityItem
+     * @param int $itemId RoleResponsibilityItem ID
+     * @return array
+     */
+    public static function getRelationsForRoleResponsibilityItem($itemId)
+    {
+        return self::getRelations($itemId);
+    }
+
+    /**
+     * Returns a map of Artifacts related to a RoleResponsibilityItem
+     * @param int $itemId RoleResponsibilityItem ID
+     * @return array
+     */
+    public static function getRelationsMapForRoleResponsibilityItem($itemId)
+    {
+        return self::getRelationsMap($itemId);
+    }
+
+    /**
+     * Returns all rows of RoleResponsibilityItems related to an Artifact
+     * @param int $artifactId Artifact ID
+     * @return array
+     */
+    public static function getRelationsForArtifact($artifactId)
+    {
+        return self::getRelations($artifactId, false);
+    }
+
+    /**
+     * Returns a map of RoleResponsibilityItems related to an Artifact
+     * @param int $artifactId Artifact ID
+     * @return array
+     */
+    public static function getRelationsMapForArtifact($artifactId)
+    {
+        return self::getRelationsMap($artifactId, false);
+    }
+
+    /**
+     * Returns all tuples for relations for Model ID
+     * @param int $modelId RoleResponsibilityItem|Artifact ID
+     * @param bool $forRoleResponsibilityItem
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    private static function getRelations($modelId, $forRoleResponsibilityItem=true)
+    {
+        $modelAttr = $forRoleResponsibilityItem? 'role_responsibility_item_id' : 'artifact_id';
+        return static::find()->where(["{$modelAttr}" => $modelId])->all();
+    }
+
+    /**
+     * Returns the relation map using id and name map
+     * @param int $modelId RoleResponsibilityItem|Artifact ID
+     * @param bool $forRoleResponsibilityItem true for search by Role Responsibility Item as default
+     * @return array
+     */
+    private static function getRelationsMap($modelId, $forRoleResponsibilityItem=true)
+    {
+        $modelAttr = $forRoleResponsibilityItem? 'role_responsibility_item_id' : 'artifact_id';
+        $modelAttrNegative = $forRoleResponsibilityItem? 'artifact_id' : 'role_responsibility_item_id';
+        $modelJoin = $forRoleResponsibilityItem? 'artifact' : 'roleResponsibilityItem';
+        $models = static::find()
+            ->joinWith(["{$modelJoin}"])->where(["{$modelAttr}" => $modelId])
+            ->asArray()->all();
+
+        $array_map = [];
+        if(count($models)>0)
+        {
+            foreach ($models AS $model)
+            {
+                $array_map[$model["{$modelAttrNegative}"]] = $model["{$modelJoin}"]["name"];
+            }
+        }
+        return $array_map;
+    }
+
 }

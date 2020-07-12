@@ -4,7 +4,6 @@ use yii\helpers\Html;
 use common\widgets\DetailView;
 use mdm\admin\components\Helper;
 use common\models\GlobalFunctions;
-use backend\models\Process;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\business\Artifact */
@@ -45,6 +44,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute'=> 'aup_scenarios',
                     'value'=> $model->getScenariosLink(),
+                    'format'=> 'html',
+                ],
+                [
+                    'attribute'=> 'role_responsibilities',
+                    'value'=> $model->getRoleResponsibilityItemsLink(),
                     'format'=> 'html',
                 ],
                 [

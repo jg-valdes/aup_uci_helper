@@ -30,6 +30,7 @@ use yii\web\UploadedFile;
  */
 class RoleResponsibilityItem extends BaseModel
 {
+    public $artifacts;
 
     /**
      * {@inheritdoc}
@@ -48,7 +49,7 @@ class RoleResponsibilityItem extends BaseModel
             [['role_responsibility_id', 'name'], 'required'],
             [['role_responsibility_id', 'status', 'views', 'downloads'], 'integer'],
             [['description'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'artifacts'], 'safe'],
             [['name'], 'string', 'max' => 255],
             [['filename'], 'file', 'extensions' => implode(',', static::getAllowedExtensions())],
             [['role_responsibility_id'], 'exist', 'skipOnError' => true, 'targetClass' => RoleResponsibility::className(), 'targetAttribute' => ['role_responsibility_id' => 'id']],
@@ -88,6 +89,7 @@ class RoleResponsibilityItem extends BaseModel
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
+            'artifacts' => Yii::t('backend', 'Artefactos'),
         ];
     }
 
@@ -142,6 +144,25 @@ class RoleResponsibilityItem extends BaseModel
     }
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
+
+    /**
+     * Return a concatenated span labels with related Artifact links
+     * @return string
+     */
+    public function getArtifactsLink()
+    {
+        $artifactsLink = [];
+        foreach (ArtifactResponsibilityItem::getRelationsMapForRoleResponsibilityItem($this->id) as $id=>$name){
+            $link = Html::a("<span class='label label-default'>{$name}</span>", ['/artifact/view', 'id'=>$id]);
+            array_push($artifactsLink, $link);
+        }
+
+        if(empty($artifactsLink)){
+            return GlobalFunctions::getNoValueSpan();
+        }
+
+        return implode(" ", $artifactsLink);
+    }
 
     /** :::::::::::: BEGIN > Handle resource file ::::::::::::*/
 

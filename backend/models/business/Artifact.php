@@ -34,6 +34,7 @@ use yii\web\UploadedFile;
 class Artifact extends BaseModel
 {
     public $aup_scenarios;
+    public $role_responsibilities;
 
     /**
      * {@inheritdoc}
@@ -52,7 +53,7 @@ class Artifact extends BaseModel
             [['process_id', 'name'], 'required'],
             [['process_id', 'order', 'status', 'views', 'downloads'], 'integer'],
             [['description'], 'string'],
-            [['created_at', 'updated_at', 'aup_scenarios'], 'safe'],
+            [['created_at', 'updated_at', 'aup_scenarios', 'role_responsibilities'], 'safe'],
             [['name'], 'string', 'max' => 255],
 //            [['order'], 'unique', 'targetAttribute'=>['order', 'process_id']],
             [['filename'], 'file', 'extensions' => implode(',', static::getAllowedExtensions())],
@@ -95,6 +96,7 @@ class Artifact extends BaseModel
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
             'aup_scenarios' => Yii::t('backend', 'Escenarios'),
+            'role_responsibilities' => Yii::t('backend', 'Responsabilidades de Rol'),
         ];
     }
 
@@ -194,6 +196,24 @@ class Artifact extends BaseModel
             return GlobalFunctions::getNoValueSpan();
         }
         return implode(" ", $scenariosLink);
+    }
+
+    /**
+     * Return a concatenated span labels with related RoleResponsibilityItem links
+     * @return string
+     */
+    public function getRoleResponsibilityItemsLink()
+    {
+        $responsibilityLink = [];
+        foreach (ArtifactResponsibilityItem::getRelationsMapForArtifact($this->id) as $id=>$name){
+            $link = Html::a("<span class='label label-default'>{$name}</span>", ['/role-responsibility-item/view', 'id'=>$id]);
+            array_push($responsibilityLink, $link);
+        }
+
+        if(empty($responsibilityLink)){
+            return GlobalFunctions::getNoValueSpan();
+        }
+        return implode(" ", $responsibilityLink);
     }
 
     public function getDescription()

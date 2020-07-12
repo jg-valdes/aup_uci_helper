@@ -49,6 +49,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'format'=> 'html',
                 ],
                 [
+                    'attribute'=> 'artifacts',
+                    'value'=> $model->getArtifactsLink(),
+                    'format'=> 'html',
+                ],
+                [
                     'attribute'=> 'views',
                     'value'=> GlobalFunctions::getFormattedViewsCount($model->views, true),
                     'format'=> 'html',

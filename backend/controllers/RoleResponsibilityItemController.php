@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\business\Artifact;
+use backend\models\business\ArtifactResponsibilityItem;
 use backend\models\business\RoleResponsibility;
 use Yii;
 use backend\models\business\RoleResponsibilityItem;
@@ -80,6 +82,18 @@ class RoleResponsibilityItemController extends Controller
         $responsibility = $this->findResponsibilityModel($id);
         $model = new RoleResponsibilityItem(['status'=>RoleResponsibilityItem::STATUS_ACTIVE, 'role_responsibility_id'=>$responsibility->id]);
 
+        $artifacts_selected = [];
+        $list_artifacts = Artifact::getSelectMap();
+
+        $items_artifacts = [];
+        foreach ($list_artifacts AS $key => $value)
+        {
+            $items_artifacts[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
         if ($model->load(Yii::$app->request->post()))
         {
             $transaction = \Yii::$app->db->beginTransaction();
@@ -87,13 +101,18 @@ class RoleResponsibilityItemController extends Controller
             try
             {
                 $resource = $model->uploadResource();
-
+                $artifacts = explode(',',$model->artifacts);
                 if($model->save())
                 {
                     if($resource){
                         $path = $model->getResourceFile();
                         $resource->saveAs($path);
                     }
+                    foreach ($artifacts AS $index => $artifactId)
+                    {
+                        ArtifactResponsibilityItem::addRelation($model->id, $artifactId);
+                    }
+
                     $transaction->commit();
 
                     GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento creado correctamente'));
@@ -114,6 +133,8 @@ class RoleResponsibilityItemController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'items_selected' => $artifacts_selected,
+            'items_artifacts' => $items_artifacts,
         ]);
 
     }
@@ -124,10 +145,36 @@ class RoleResponsibilityItemController extends Controller
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException
+     * @throws \Throwable
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $list_artifacts_selected = ArtifactResponsibilityItem::getRelationsMapForRoleResponsibilityItem($id);
+        $list_artifacts = Artifact::getSelectMap();
+        $list_artifacts = array_diff($list_artifacts, $list_artifacts_selected);
+
+        $items_artifacts = [];
+        foreach ($list_artifacts AS $key => $value)
+        {
+            $items_artifacts[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
+        $artifacts_selected = [];
+        $old_selected = [];
+
+        foreach ($list_artifacts_selected AS $key => $value)
+        {
+            $old_selected[] = "{$key}";
+
+            $artifacts_selected[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
 
         if(isset($model) && !empty($model))
         {
@@ -146,6 +193,7 @@ class RoleResponsibilityItemController extends Controller
                     if ($resource === false) {
                         $model->filename = $old_resource;
                     }
+                    $artifacts = explode(',',$model->artifacts);
 
                     if($model->save())
                     {
@@ -165,11 +213,27 @@ class RoleResponsibilityItemController extends Controller
                             $path = $model->getResourceFile();
                             $resource->saveAs($path);
                         }
+
+                        $toRemove = array_diff($old_selected, $artifacts);
+                        if(isset($toRemove) && !empty($toRemove))
+                        {
+                            foreach ($toRemove as $item)
+                            {
+                                ArtifactResponsibilityItem::deleteRelation($model->id, $item);
+                            }
+                        }
+
+                        if(isset($artifacts) && !empty($artifacts)){
+                            foreach ($artifacts AS $index => $item)
+                            {
+                                ArtifactResponsibilityItem::addRelation($model->id, $item);
+                            }
+                        }
                         $transaction->commit();
 
                         GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
 
-                        return $this->redirect(['index']);
+                        return $this->redirect(['view', 'id'=>$model->id]);
                     }
                     else
                     {
@@ -190,6 +254,8 @@ class RoleResponsibilityItemController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'items_selected' => $artifacts_selected,
+            'items_artifacts' => $items_artifacts,
         ]);
 
     }
@@ -365,7 +431,6 @@ class RoleResponsibilityItemController extends Controller
         Yii::$app->response->sendFile($route, $attachName)->send();
 
         return $fromView ? $this->redirect(['view', 'id' => $id]) : $this->redirect(['index']);
-
     }
 
 }
