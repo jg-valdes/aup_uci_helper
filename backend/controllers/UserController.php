@@ -490,7 +490,7 @@ class UserController extends Controller
 				}
 
 				GlobalFunctions::addFlashMessage('success',Yii::t('backend','Usuario actualizado satisfactoriamente'));
-				return $this->redirect(['index']);
+                return $this->redirect(['view', 'id'=>$model->id]);
 			}
 			else
 			{

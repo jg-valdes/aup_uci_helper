@@ -133,7 +133,7 @@ class DisciplineController extends Controller
 
                         GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
 
-                        return $this->redirect(['index']);
+                        return $this->redirect(['view', 'id'=>$model->id]);
                     }
                     else
                     {
