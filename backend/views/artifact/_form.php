@@ -149,7 +149,7 @@ use kartik\sortable\Sortable;
         <div class="col-md-6 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
             <div class="box box-primary box-solid">
                 <div class="box-header with-border">
-                    <h3 class="box-title"><?= Yii::t('backend', 'Escenarios que aplican') ?></h3>
+                    <h3 class="box-title"><?= Yii::t('backend', 'Escenarios seleccionados') ?></h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
