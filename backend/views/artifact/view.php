@@ -43,6 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'attributes' => [
                 'id',
                 [
+                    'attribute'=> 'aup_scenarios',
+                    'value'=> $model->getScenariosLink(),
+                    'format'=> 'html',
+                ],
+                [
                     'attribute'=> 'process_id',
                     'value'=> $model->getProcessLink(),
                     'format'=> 'html',

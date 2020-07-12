@@ -28,10 +28,12 @@ use yii\web\UploadedFile;
  * @property Process $process
  * @property ArtifactResponsibilityItem[] $artifactResponsibilityItems
  * @property ScenarioArtifact[] $scenarioArtifacts
+ * @property Scenario[] $scenarios
 
  */
 class Artifact extends BaseModel
 {
+    public $aup_scenarios;
 
     /**
      * {@inheritdoc}
@@ -50,7 +52,7 @@ class Artifact extends BaseModel
             [['process_id', 'name'], 'required'],
             [['process_id', 'order', 'status', 'views', 'downloads'], 'integer'],
             [['description'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'aup_scenarios'], 'safe'],
             [['name'], 'string', 'max' => 255],
 //            [['order'], 'unique', 'targetAttribute'=>['order', 'process_id']],
             [['filename'], 'file', 'extensions' => implode(',', static::getAllowedExtensions())],
@@ -92,6 +94,7 @@ class Artifact extends BaseModel
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
+            'aup_scenarios' => Yii::t('backend', 'Escenarios'),
         ];
     }
 
@@ -117,6 +120,15 @@ class Artifact extends BaseModel
     public function getScenarioArtifacts()
     {
         return $this->hasMany(ScenarioArtifact::className(), ['artifact_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getScenarios()
+    {
+        return $this->hasMany(Scenario::className(), ['id' => 'scenario_id'])->viaTable('scenario_artifact', ['artifact_id' => 'id']);
     }
 
     /** :::::::::::: START > Abstract Methods and Overrides ::::::::::::*/
@@ -161,6 +173,17 @@ class Artifact extends BaseModel
             return $this->process->getIDLinkForThisModel();
         }
         return GlobalFunctions::getNoValueSpan();
+    }
+
+    public function getScenariosLink()
+    {
+        $scenariosLink = [];
+        foreach (ScenarioArtifact::getRelationsMapForArtifact($this->id) as $id=>$name){
+            $link = Html::a("<span class='label label-default'>{$name}</span>", ['/scenario/view', 'id'=>$id]);
+            array_push($scenariosLink, $link);
+        }
+
+        return implode(" ", $scenariosLink);
     }
 
     public function getDescription()

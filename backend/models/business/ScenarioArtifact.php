@@ -19,7 +19,7 @@ use yii\helpers\Html;
  * @property string $updated_at
  *
  * @property Artifact $artifact
- * @property Scenario $scenario0
+ * @property Scenario $aupScenario
 
  */
 class ScenarioArtifact extends BaseModel
@@ -73,7 +73,7 @@ class ScenarioArtifact extends BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getScenario0()
+    public function getAupScenario()
     {
         return $this->hasOne(Scenario::className(), ['id' => 'scenario_id']);
     }
@@ -93,7 +93,7 @@ class ScenarioArtifact extends BaseModel
     */
     public function getBaseLink()
     {
-        return "/scenario-artifact";
+        return "/scenario";
     }
 
     /**
@@ -103,10 +103,8 @@ class ScenarioArtifact extends BaseModel
     */
     public function getIDLinkForThisModel()
     {
-        $id = $this->getRepresentativeAttrID();
-        if (isset($this->$id)) {
-            $name = $this->getRepresentativeAttrName();
-            return Html::a($this->$name, [$this->getBaseLink() . "/view", 'id' => $this->getId()]);
+        if (isset($this->aupScenario)) {
+            return Html::a($this->aupScenario->name, [$this->getBaseLink() . "/view", 'id' => $this->scenario_id]);
         } else {
             return GlobalFunctions::getNoValueSpan();
         }
@@ -114,4 +112,121 @@ class ScenarioArtifact extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    /**
+     * @param $scenarioId int Scenario ID
+     * @param $artifactId int Artifact ID
+     * @return bool
+     */
+    public static function addRelation($scenarioId, $artifactId)
+    {
+        return (new self([
+            'status' => self::STATUS_ACTIVE,
+            'artifact_id' => $artifactId,
+            'scenario_id' => $scenarioId
+        ]))->save();
+    }
+
+    /**
+     * @param $scenarioId int Scenario ID
+     * @param $artifactId int Artifact ID
+     * @return bool|false|int
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public static function deleteRelation($scenarioId, $artifactId)
+    {
+        if(self::existRelation($scenarioId, $artifactId)){
+            return static::findOne(['artifact_id' => $artifactId, 'scenario_id' => $scenarioId])->delete();
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $scenarioId int Scenario ID
+     * @param $artifactId int Artifact ID
+     * @return bool
+     */
+    public static function existRelation($scenarioId, $artifactId)
+    {
+        return static::find()->where(['artifact_id' => $artifactId, 'scenario_id' => $scenarioId])->exists();
+    }
+
+    /**
+     * Returns all rows of Artifacts related to a Scenario
+     * @param int $scenarioId Scenario ID
+     * @return array
+     */
+    public static function getRelationsForScenario($scenarioId)
+    {
+        return self::getRelations($scenarioId);
+    }
+
+    /**
+     * Returns a map of Artifacts related to a Scenario
+     * @param int $scenarioId Scenario ID
+     * @return array
+     */
+    public static function getRelationsMapForScenario($scenarioId)
+    {
+        return self::getRelationsMap($scenarioId);
+    }
+
+    /**
+     * Returns all rows of Scenarios related to an Artifact
+     * @param int $artifactId Artifact ID
+     * @return array
+     */
+    public static function getRelationsForArtifact($artifactId)
+    {
+        return self::getRelations($artifactId, false);
+    }
+
+    /**
+     * Returns a map of Scenarios related to an Artifact
+     * @param int $artifactId Artifact ID
+     * @return array
+     */
+    public static function getRelationsMapForArtifact($artifactId)
+    {
+        return self::getRelationsMap($artifactId, false);
+    }
+
+    /**
+     * Returns all tuples for relations for Model ID
+     * @param int $modelId Scenario|Artifact ID
+     * @param bool $forScenario
+     * @return array|\yii\db\ActiveRecord[]
+     */
+    private static function getRelations($modelId, $forScenario=true)
+    {
+        $modelAttr = $forScenario? 'scenario_id' : 'artifact_id';
+        return static::find()->where(["{$modelAttr}" => $modelId])->all();
+    }
+
+    /**
+     * Returns the relation map using id and name map
+     * @param int $modelId Scenario|Artifact ID
+     * @param bool $forScenario true for search by scenario as default
+     * @return array
+     */
+    private static function getRelationsMap($modelId, $forScenario=true)
+    {
+        $modelAttr = $forScenario? 'scenario_id' : 'artifact_id';
+        $modelAttrNegative = $forScenario? 'artifact_id' : 'scenario_id';
+        $modelJoin = $forScenario? 'artifact' : 'aupScenario';
+        $models = static::find()
+            ->joinWith(["{$modelJoin}"])->where(["{$modelAttr}" => $modelId])
+            ->asArray()->all();
+
+        $array_map = [];
+        if(count($models)>0)
+        {
+            foreach ($models AS $model)
+            {
+                $array_map[$model["{$modelAttrNegative}"]] = $model["{$modelJoin}"]["name"];
+            }
+        }
+        return $array_map;
+    }
 }

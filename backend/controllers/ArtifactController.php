@@ -2,9 +2,12 @@
 
 namespace backend\controllers;
 
+use backend\models\business\Scenario;
+use backend\models\business\ScenarioArtifact;
 use Yii;
 use backend\models\business\Artifact;
 use backend\models\business\ArtifactSearch;
+use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -73,6 +76,18 @@ class ArtifactController extends Controller
     {
         $model = new Artifact(['status'=>Artifact::STATUS_ACTIVE]);
 
+        $scenarios_selected = [];
+        $list_scenarios = Scenario::getSelectMap();
+
+        $items_scenarios = [];
+        foreach ($list_scenarios AS $key => $value)
+        {
+            $items_scenarios[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
         if ($model->load(Yii::$app->request->post()))
         {
             $transaction = \Yii::$app->db->beginTransaction();
@@ -80,6 +95,7 @@ class ArtifactController extends Controller
             try
             {
                 $resource = $model->uploadResource();
+                $scenarios = explode(',',$model->aup_scenarios);
 
                 if($model->save())
                 {
@@ -87,6 +103,12 @@ class ArtifactController extends Controller
                         $path = $model->getResourceFile();
                         $resource->saveAs($path);
                     }
+
+                    foreach ($scenarios AS $index => $scenarioId)
+                    {
+                        ScenarioArtifact::addRelation($scenarioId, $model->id);
+                    }
+
                     $transaction->commit();
 
                     GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento creado correctamente'));
@@ -107,6 +129,8 @@ class ArtifactController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'items_selected' => $scenarios_selected,
+            'items_scenarios' => $items_scenarios,
         ]);
 
     }
@@ -116,13 +140,42 @@ class ArtifactController extends Controller
      * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
      */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
+        $list_scenarios_selected = ScenarioArtifact::getRelationsMapForArtifact($id);
+        $list_scenarios = Scenario::getSelectMap();
+        $list_scenarios = array_diff($list_scenarios, $list_scenarios_selected);
+
+        $items_scenarios = [];
+        foreach ($list_scenarios AS $key => $value)
+        {
+            $items_scenarios[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
+        $scenarios_selected = [];
+        $old_selected = [];
+
+        foreach ($list_scenarios_selected AS $key => $value)
+        {
+            $old_selected[] = "{$key}";
+
+            $scenarios_selected[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
         if(isset($model) && !empty($model))
         {
+
             $old_resource_file = $model->getResourceFile();
             $old_resource = $model->filename;
 
@@ -138,6 +191,8 @@ class ArtifactController extends Controller
                     if ($resource === false) {
                         $model->filename = $old_resource;
                     }
+
+                    $scenarios = explode(',', $model->aup_scenarios);
 
                     if($model->save())
                     {
@@ -157,6 +212,23 @@ class ArtifactController extends Controller
                             $path = $model->getResourceFile();
                             $resource->saveAs($path);
                         }
+
+                        $toRemove = array_diff($old_selected, $scenarios);
+                        if(isset($toRemove) && !empty($toRemove))
+                        {
+                            foreach ($toRemove as $item)
+                            {
+                                ScenarioArtifact::deleteRelation($item, $model->id);
+                            }
+                        }
+
+                        if(isset($scenarios) && !empty($scenarios)){
+                            foreach ($scenarios AS $index => $item)
+                            {
+                                ScenarioArtifact::addRelation($item, $model->id);
+                            }
+                        }
+
                         $transaction->commit();
 
                         GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
@@ -182,6 +254,8 @@ class ArtifactController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'items_selected' => $scenarios_selected,
+            'items_scenarios' => $items_scenarios,
         ]);
 
     }
@@ -191,6 +265,8 @@ class ArtifactController extends Controller
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
      */
     public function actionDelete($id)
     {
@@ -238,10 +314,12 @@ class ArtifactController extends Controller
     }
 
     /**
-    * Bulk Deletes for existing Artifact models.
-    * If deletion is successful, the browser will be redirected to the 'index' page.
-    * @return mixed
-    */
+     * Bulk Deletes for existing Artifact models.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     */
     public function actionMultiple_delete()
     {
         if(Yii::$app->request->post('row_id'))
