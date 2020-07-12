@@ -49,8 +49,7 @@ else {
     $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/almasaeed2010/adminlte/dist');
 
     $this->registerCssFile("@web/css/customYii.css");
-    $this->registerCssFile("@web/plugins/treejs/mdb.min.css");
-    $this->registerCssFile("@web/plugins/treejs/mdb.lite.min.css");
+    $this->registerCssFile("@web/plugins/treejs/treeview.css");
 
     ?>
     <?php $this->beginPage() ?>
