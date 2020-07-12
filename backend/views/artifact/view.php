@@ -84,6 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute'=> 'filename',
                     'value'=> GlobalFunctions::renderPreviewForIndex($model->getResourceFile(), $model->name),
                     'format' => 'raw',
+                    'visible' => $model->hasResource()
                 ],
                 [
                     'attribute'=> 'status',

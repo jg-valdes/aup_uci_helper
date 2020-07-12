@@ -18,6 +18,8 @@ use kartik\tabs\TabsX;
 /* @var $form yii\widgets\ActiveForm */
 /* @var $items_selected array of selected Scenarios */
 /* @var $items_scenarios array of Scenarios map */
+/* @var $items_responsibilities_selected array of selected RoleResponsibilityItem */
+/* @var $items_responsibilities array of RoleResponsibilityItem map */
 
 ?>
 
@@ -32,6 +34,12 @@ use kartik\tabs\TabsX;
             'items_selected' => $items_selected,
             'items_scenarios' => $items_scenarios,
         ]);
+        $content3 = $this->render('_form_role_responsibility_items', [
+            'model' => $model,
+            'form'=> $form,
+            'items_responsibilities_selected' => $items_responsibilities_selected,
+            'items_responsibilities' => $items_responsibilities,
+        ]);
 
         $items = [
             [
@@ -42,6 +50,10 @@ use kartik\tabs\TabsX;
             [
                 'label'=>Yii::t('backend', 'Escenarios'),
                 'content'=>$content2,
+            ],
+            [
+                'label'=>Yii::t('backend', 'Responsabilidades de Rol'),
+                'content'=>$content3,
             ],
         ];
 
@@ -62,18 +74,29 @@ use kartik\tabs\TabsX;
 
 <?php
 $script = <<< JS
-  //create the array that hold the positions...
-  var order = []; 
+  // SCENARIO SORTABLE
+  var orderScenario = [];
                                           
   //loop trought each li...
   $("#sortable-scenarios-select li").each( function(e) {
       //add each li position to the array...     
-      order.push( $(this).attr("data-id") );
+      orderScenario.push( $(this).attr("data-id") );
   });
 
   // join the array as single variable...
-  var positions = order.join(",");
-  document.getElementById("artifact-aup_scenarios").value = positions;
+  var positionsScenarios = orderScenario.join(",");
+  document.getElementById("artifact-aup_scenarios").value = positionsScenarios;
+  
+  // RESPONSIBILITY SORTABLE
+  var orderResponsibilities = [];
+  $("#sortable-responsibilities-select li").each( function(e) {
+      //add each li position to the array...     
+      orderResponsibilities.push( $(this).attr("data-id") );
+  });
+
+  // join the array as single variable...
+  var positionsResponsibilities = orderResponsibilities.join(",");
+  document.getElementById("artifact-role_responsibilities").value = positionsResponsibilities;
                  
 JS;
 

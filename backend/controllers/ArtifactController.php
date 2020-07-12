@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\business\ArtifactResponsibilityItem;
+use backend\models\business\RoleResponsibilityItem;
 use backend\models\business\Scenario;
 use backend\models\business\ScenarioArtifact;
 use Yii;
@@ -88,6 +90,18 @@ class ArtifactController extends Controller
             ];
         }
 
+        $responsibilities_selected = [];
+        $list_responsibilities = RoleResponsibilityItem::getSelectMap();
+
+        $items_responsibilities = [];
+        foreach ($list_responsibilities AS $key => $value)
+        {
+            $items_responsibilities[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
         if ($model->load(Yii::$app->request->post()))
         {
             $transaction = \Yii::$app->db->beginTransaction();
@@ -96,6 +110,7 @@ class ArtifactController extends Controller
             {
                 $resource = $model->uploadResource();
                 $scenarios = explode(',',$model->aup_scenarios);
+                $responsibilities = explode(',',$model->role_responsibilities);
 
                 if($model->save())
                 {
@@ -107,6 +122,10 @@ class ArtifactController extends Controller
                     foreach ($scenarios AS $index => $scenarioId)
                     {
                         ScenarioArtifact::addRelation($scenarioId, $model->id);
+                    }
+                    foreach ($responsibilities AS $index => $itemId)
+                    {
+                        ArtifactResponsibilityItem::addRelation($itemId, $model->id);
                     }
 
                     $transaction->commit();
@@ -131,6 +150,8 @@ class ArtifactController extends Controller
             'model' => $model,
             'items_selected' => $scenarios_selected,
             'items_scenarios' => $items_scenarios,
+            'items_responsibilities_selected' => $responsibilities_selected,
+            'items_responsibilities' => $items_responsibilities,
         ]);
 
     }
@@ -173,6 +194,32 @@ class ArtifactController extends Controller
             ];
         }
 
+        $list_responsibilities_selected = ArtifactResponsibilityItem::getRelationsMapForArtifact($id);
+        $list_responsibilities = RoleResponsibilityItem::getSelectMap();
+        $list_responsibilities = array_diff($list_responsibilities, $list_responsibilities_selected);
+
+        $items_responsibilities = [];
+        foreach ($list_responsibilities AS $key => $value)
+        {
+            $items_responsibilities[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
+        $responsibilities_selected = [];
+        $old_responsibilities_selected = [];
+
+        foreach ($list_responsibilities_selected AS $key => $value)
+        {
+            $old_responsibilities_selected[] = "{$key}";
+
+            $responsibilities_selected[$key] = [
+                'content' => $value,
+                'options' => ['data' => ['id'=>$key]],
+            ];
+        }
+
         if(isset($model) && !empty($model))
         {
 
@@ -193,6 +240,7 @@ class ArtifactController extends Controller
                     }
 
                     $scenarios = explode(',', $model->aup_scenarios);
+                    $responsibilities = explode(',', $model->role_responsibilities);
 
                     if($model->save())
                     {
@@ -229,6 +277,22 @@ class ArtifactController extends Controller
                             }
                         }
 
+                        $toRemoveResponsibilities = array_diff($old_responsibilities_selected, $responsibilities);
+                        if(isset($toRemoveResponsibilities) && !empty($toRemoveResponsibilities))
+                        {
+                            foreach ($toRemoveResponsibilities as $item)
+                            {
+                                ArtifactResponsibilityItem::deleteRelation($item, $model->id);
+                            }
+                        }
+
+                        if(isset($responsibilities) && !empty($responsibilities)){
+                            foreach ($responsibilities AS $index => $item)
+                            {
+                                ArtifactResponsibilityItem::addRelation($item, $model->id);
+                            }
+                        }
+
                         $transaction->commit();
 
                         GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
@@ -256,6 +320,8 @@ class ArtifactController extends Controller
             'model' => $model,
             'items_selected' => $scenarios_selected,
             'items_scenarios' => $items_scenarios,
+            'items_responsibilities_selected' => $responsibilities_selected,
+            'items_responsibilities' => $items_responsibilities,
         ]);
 
     }
