@@ -81,6 +81,8 @@ class IaCaseSearch extends IaCase
             $this->created_at = null;
         }
 
+        $query->orderBy('created_at DESC');
+
         return $dataProvider;
     }
 }

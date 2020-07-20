@@ -24,6 +24,7 @@ use yii\helpers\Html;
  */
 class IaCase extends BaseModel
 {
+    public $metrics;
 
     /**
      * {@inheritdoc}
@@ -39,7 +40,6 @@ class IaCase extends BaseModel
     public function rules()
     {
         return [
-            [['scenario_id'], 'required'],
             [['scenario_id', 'status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['scenario_id'], 'exist', 'skipOnError' => true, 'targetClass' => Scenario::className(), 'targetAttribute' => ['scenario_id' => 'id']],
@@ -53,7 +53,8 @@ class IaCase extends BaseModel
     {
         return [
             'id' => Yii::t('backend', 'ID'),
-            'scenario_id' => Yii::t('backend', 'Scenario ID'),
+            'scenario_id' => Yii::t('backend', 'Escenario'),
+            'metrics' => Yii::t('backend', 'Métricas'),
             'status' => Yii::t('backend', 'Estado'),
             'created_at' => Yii::t('backend', 'Fecha de creación'),
             'updated_at' => Yii::t('backend', 'Fecha de actualiación'),
@@ -112,4 +113,11 @@ class IaCase extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    public function getScenarioLink()
+    {
+        if(isset($this->scenario0)){
+            return $this->scenario0->getIDLinkForThisModel();
+        }
+        return GlobalFunctions::getNoValueSpan();
+    }
 }

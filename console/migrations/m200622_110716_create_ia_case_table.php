@@ -17,13 +17,13 @@ class m200622_110716_create_ia_case_table extends Migration
             $tableOptions = 'CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB';
         }
 
-        $this->createTable('{{%ia_case}}', [
-            'id' => $this->primaryKey(),
-            'scenario_id' => $this->integer(10)->notNull(),
-            'status' => $this->tinyInteger(1)->notNull()->defaultValue('1'),
-            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
-            'updated_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-        ], $tableOptions);
+//        $this->createTable('{{%ia_case}}', [
+//            'id' => $this->primaryKey(),
+//            'scenario_id' => $this->integer(10),
+//            'status' => $this->tinyInteger(1)->notNull()->defaultValue('1'),
+//            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+//            'updated_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+//        ], $tableOptions);
 
         $this->addForeignKey(
             'fk_ia_case_scenario',

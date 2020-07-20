@@ -216,7 +216,6 @@ $js = <<<JS
                     $("#metricItemModal").modal('hide');
                     $.pjax.reload({container: '#items-pjax', timeout: 2000});
                     $(form).trigger('reset');
-                    assignFormTrigger();
                 }else{
                     if(response.data.hasOwnProperty('errors'))
                     $.each(response.data.errors, function(key, val) {
@@ -229,7 +228,6 @@ $js = <<<JS
                 console.log("No connection to server");
                 console.log(e);
                 $("#metricItemModal").modal('hide');
-                assignFormTrigger();
             });
         
         }).on('submit', function(e){

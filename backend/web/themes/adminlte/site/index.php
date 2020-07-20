@@ -14,7 +14,7 @@ $this->title = Setting::getName();
     <div class="row">
         <div class="col-md-3 col-xl-3 col-lg-3 col-sm-12 col-xs-12">
             <div class="treeview-animated">
-                <h5 class=""><?= Yii::t("backend", "Documentación") ?></h5>
+                <h5 class=""><?= Yii::t("backend", "Documentación") ?> (<?= \yii\helpers\Html::a(Yii::t("backend", "Predecir Escenario"), ['/site/predictor'])?>)</h5>
                 <hr>
                 <ul class="treeview-animated-list">
                     <li class="treeview-animated-items">

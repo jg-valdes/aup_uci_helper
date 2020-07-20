@@ -1,6 +1,11 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\business\Scenario;
+use backend\models\knn\CaseMetric;
+use backend\models\knn\IaCase;
+use backend\models\knn\Metric;
+use backend\models\knn\MetricItem;
 use common\models\GlobalFunctions;
 use machour\yii2\notifications\models\Notification;
 use Yii;
@@ -25,7 +30,8 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['logout', 'index', 'error','change_lang', "ckeditorupload",'info_test'],
+                        'actions' => ['logout', 'index',
+                            'predictor', 'error','change_lang', "ckeditorupload",'info_test'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -55,6 +61,33 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionPredictor()
+    {
+        if(Yii::$app->request->isPost){
+            $formItems = Yii::$app->request->post();
+            $model = new IaCase(['status'=>IaCase::STATUS_ACTIVE]);
+            $model->save();
+            foreach ($formItems as $key=>$value){
+                $metricId = explode("_", $key);
+                if(is_numeric($metricId[1])){
+                    $metric = Metric::find()->where(['id'=>$metricId[1]])->one();
+                    $item = MetricItem::find()->where(['id'=>$value])->one();
+                    if( isset($metric) && isset($item)){
+                        (new CaseMetric([
+                            'ia_case_id' => $model->id,
+                            'metric_id' => $metric->id,
+                            'metric_item_id' => $item->id
+                        ]))->save();
+                    }
+                }
+            }
+        }
+
+        return $this->render('predictor', [
+            'metrics' => Metric::findAll(['status'=>Metric::STATUS_ACTIVE])
+        ]);
     }
 
 

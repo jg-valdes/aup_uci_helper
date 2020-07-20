@@ -122,4 +122,9 @@ class Metric extends BaseModel
         }
         return GlobalFunctions::getNoValueSpan();
     }
+
+    public function hasMetricItems()
+    {
+        return $this->getMetricMetricItems()->count() > 0;
+    }
 }
