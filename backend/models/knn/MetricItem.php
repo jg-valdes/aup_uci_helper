@@ -122,4 +122,9 @@ class MetricItem extends BaseModel
         $items = MetricMetricItem::findAll(['metric_id'=>$metricId]);
         return static::findAll(['IN', 'id', ArrayHelper::getColumn($items, 'metric_id')]);
     }
+
+    public function getWeight()
+    {
+        return MetricMetricItem::getMetricItemWeight($this->id);
+    }
 }

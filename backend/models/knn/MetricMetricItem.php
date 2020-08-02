@@ -126,4 +126,13 @@ class MetricMetricItem extends BaseModel
     {
         return $this->metricItem->name;
     }
+
+    public static function getMetricItemWeight($metricItemId)
+    {
+        $relation = static::findOne(['metric_item_id'=>$metricItemId]);
+        if(isset($relation)){
+            return $relation->weight;
+        }
+        return 0;
+    }
 }

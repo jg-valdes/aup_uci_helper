@@ -27,6 +27,11 @@ class IaCase extends BaseModel
     public $metrics;
 
     /**
+     * @var array for keep metrics in calculate distance format
+     */
+    public $_currentMetrics;
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -120,4 +125,74 @@ class IaCase extends BaseModel
         }
         return GlobalFunctions::getNoValueSpan();
     }
+
+
+    /** :::::::::::: BEGIN > KNN functions ::::::::::::*/
+
+    /**
+     * @param IaCase $targetCase
+     * @return float|int
+     */
+    public function calculateDistance(IaCase $targetCase)
+    {
+        if(empty($this->_currentMetrics)){
+            $this->fillMetricsForCalculateDistance();
+        }
+        $targetCase->fillMetricsForCalculateDistance();
+
+        if(empty($targetCase->_currentMetrics)){
+          return $this->getFullDistance();
+        }
+        if(empty($this->_currentMetrics)){
+            return $targetCase->getFullDistance();
+        }
+
+        $distance = 0;
+        foreach ($this->_currentMetrics as $case){
+            if(in_array($case['metric_id'], array_column($targetCase->_currentMetrics,'metric_id'))){
+                foreach ($targetCase->_currentMetrics as $target){
+                    if($case['metric_id'] == $target['metric_id']){
+                        $v = 0; // Value
+                        $w = 1; // Weight Multiply
+                        if($case['metric_item_id'] == $target['metric_item_id']){
+                            $v = 1;
+                            if($target['weight'] > 0){
+                                $w = $target['weight'];
+                            }
+                        }
+                        $distance += $v*$w;
+                    }
+                }
+            }
+        }
+
+        return $distance;
+    }
+
+    public function getFullDistance()
+    {
+        $distance = 0;
+        foreach ($this->_currentMetrics as $case){
+            $w = 1;
+            if($case['weight'] > 0){
+                $w = $case['weight'];
+            }
+            $distance += 1*$w;
+        }
+        return $distance;
+    }
+
+    public function fillMetricsForCalculateDistance()
+    {
+        $this->_currentMetrics = [];
+        foreach ($this->caseMetrics as $relation){
+            array_push($this->_currentMetrics, [
+               'metric_id' => $relation->metric_id,
+               'metric_item_id' => $relation->metric_item_id,
+               'weight' => $relation->metricItem->getWeight()
+            ]);
+        }
+    }
+
+    /** :::::::::::: END > KNN functions ::::::::::::*/
 }

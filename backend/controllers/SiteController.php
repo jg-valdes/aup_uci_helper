@@ -65,8 +65,11 @@ class SiteController extends Controller
 
     public function actionPredictor()
     {
+        $knn = [];
+        $k = 5;
         if(Yii::$app->request->isPost){
             $formItems = Yii::$app->request->post();
+            $k = Yii::$app->request->post('k_delimiter', $k);
             $model = new IaCase(['status'=>IaCase::STATUS_ACTIVE]);
             $model->save();
             foreach ($formItems as $key=>$value){
@@ -83,10 +86,59 @@ class SiteController extends Controller
                     }
                 }
             }
+
+            $model->fillMetricsForCalculateDistance();
+
+            $distances = [];
+            foreach (IaCase::findAll(['status'=>IaCase::STATUS_ACTIVE]) as $case){
+                array_push($distances, [
+                    'distance'=>$model->calculateDistance($case),
+                    'scenario'=> isset($case->scenario_id)? $case->scenario_id: 0
+                ]);
+            }
+
+
+            usort($distances, function ($a, $b){
+                if ($a['distance'] == $b['distance']) {
+                    return 0;
+                }
+                return ($a['distance'] < $b['distance']) ? 1 : -1;
+            });
+            $results = array_slice($distances, 0, $k);
+
+            foreach (Scenario::getSelectMap() as $key=>$value){
+                $count = 0;
+                foreach ($results as $item){
+                    if($item['scenario']==$key){
+                        $count++;
+                    }
+                }
+                array_push($knn, ['scenario_id'=>$key, 'occurrences'=>$count]);
+            }
+
+            if(count($knn) > 1){
+                for($i = 0; $i < count($knn)-1; $i++){
+                    for($j = $i+1; $j < count($knn); $j++){
+                        if($knn[$i]['occurrences'] < $knn[$j]['occurrences']){
+                            $temp = $knn[$j];
+                            $knn[$j] = $knn[$i];
+                            $knn[$i] = $temp;
+                        }
+                    }
+                }
+            }
+            if(count($knn) > 0){
+                $model->scenario_id = $knn[0]['scenario_id'];
+                $model->save();
+            }
+
+
         }
 
         return $this->render('predictor', [
-            'metrics' => Metric::findAll(['status'=>Metric::STATUS_ACTIVE])
+            'metrics' => Metric::findAll(['status'=>Metric::STATUS_ACTIVE]),
+            'knn' => $knn,
+            'k_delimiter' => $k
         ]);
     }
 
