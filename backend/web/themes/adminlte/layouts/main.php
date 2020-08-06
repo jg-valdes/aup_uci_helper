@@ -65,7 +65,7 @@ else {
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
     </head>
-    <body class="skin-black sidebar-mini fixed">
+    <body class="skin-black sidebar-mini fixed sidebar-collapse">
 
     <?php $this->beginBody() ?>
     <div class="wrapper">

@@ -21,8 +21,8 @@ use common\models\User;
         $menu_items = [
             //Inicio
             [
-                'label' => Yii::t("backend", "Panel de Control"),
-                'icon' => 'dashboard',
+                'label' => Yii::t("backend", "Inicio"),
+                'icon' => 'home',
                 'url' => '/',
             ],
 

@@ -23,8 +23,8 @@ class m190513_021114_create_init_values_setting extends Migration
             $seeting_model->phone= '+53 5555555';
             $seeting_model->mini_header_logo = null;
             $seeting_model->language = 'es';
-            $seeting_model->name = 'AUPvUCI Predictor';
-            $seeting_model->seo_keywords = 'AUPvUCI, Metodología de desarrollo de software';
+            $seeting_model->name = 'Predictor AUP-UCI';
+            $seeting_model->seo_keywords = 'AUP-UCI, Metodología de desarrollo de software';
             $seeting_model->description = 'Sistema para el apoyo documental sobre la metodología de desarrollo de software AUPvUCI.';
 
             if($seeting_model->save())
@@ -42,14 +42,14 @@ class m190513_021114_create_init_values_setting extends Migration
             {
                 $english = new SettingLang();
                 $english->setting_id = 1;
-                $english->name = 'AUPvUCI Predictor';
-                $english->seo_keywords = 'AUPvUCI, Metodología de desarrollo de software';
+                $english->name = 'AUP-UCI Predictor';
+                $english->seo_keywords = 'AUP-UCI, Software Development Methodology';
                 $english->description = 'System for support references about UCI development Software Methodology.';
                 $english->language = 'en';
 
                 if($english->save())
                 {
-                    echo "      > Setting EN inserted sussessfully.\n";
+                    echo "      > Setting EN inserted successfully.\n";
                 }
                 else
                 {

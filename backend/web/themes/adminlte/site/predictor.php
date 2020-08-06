@@ -4,15 +4,24 @@ use backend\models\settings\Setting;
 use common\models\GlobalFunctions;
 use common\models\User;
 use yii\widgets\ActiveForm;
-use kartik\widgets\RangeInput;
 use yii\helpers\Url;
+use kartik\select2\Select2;
+use backend\models\business\Scenario;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $metrics \backend\models\knn\Metric[] */
 /* @var $knn array with scenarios and results */
 /* @var $k_delimiter int for define KNN clusters */
+/* @var $model \backend\models\knn\IaCase */
 
-$this->title = Yii::t("backend", "Selecciona las condiciones de tu proyecto");
+if(empty($knn)){
+
+    $this->title = Yii::t("backend", "Seleccione las condiciones de su proyecto");
+}else{
+    $this->title = Yii::t("backend", "Análisis completado");
+}
+
 $this->registerCssFile("@web/plugins/custom.quiz/custom.quiz.css");
 
 ?>
@@ -30,24 +39,34 @@ $this->registerCssFile("@web/plugins/custom.quiz/custom.quiz.css");
                 <button id="submit_quiz" class="btn btn-success"><?= Yii::t("backend", "Predecir Escenario") ?></button>
                 <div id="results"></div>
             </div>
-            <?php $form = ActiveForm::begin(['options' => ['id' => 'quiz-form', 'class' => 'hidden']]); ?>
+            <?php ActiveForm::begin(['options' => ['id' => 'quiz-form', 'class' => 'hidden']]);
+                  ActiveForm::end();
+            }else{ ?>
+                    <h5><?= Yii::t("backend", "El sistema recomienda el siguiente escenario"); ?>: <?= $model->scenario0->name;?> <a href="<?= Url::to(['/scenario/view', 'id'=>$model->scenario_id]); ?>" class="small-box-footer">
+                            (<?= Yii::t("backend", "Ver documentación") ?>)
+                            </a>.</h5>
 
-            <?php ActiveForm::end(); ?>
-            <?php }else{ ?>
-                <div class="col-lg-3 col-xs-6">
-                    <!-- small box -->
-                    <div class="small-box bg-green">
-                        <div class="inner">
-                            <h4><?= \backend\models\business\Scenario::findOne(['id'=> $knn[0]['scenario_id']])->name;?></h4>
-                        </div>
-                        <div class="icon">
-                            <i class="ion ion-stats-bars"></i>
-                        </div>
-                        <a href="<?= Url::to(['/scenario/view', 'id'=>$knn[0]['scenario_id']]); ?>" class="small-box-footer">
-                            <?= Yii::t("backend", "Ver documentación") ?>
-                            <i class="fa fa-arrow-circle-right"></i></a>
+                <?php $form = ActiveForm::begin(['action'=> Url::to(['/ia-case/update', 'id'=>$model->id]), 'options' => ['id' => 'case-form']]); ?>
+                <h6><?= Yii::t("backend", "Puede mejorar nuestra base de conocimientos seleccionando otro escenario a continuación: "); ?></h6>
+                <div class="col-md-3 col-lg-3 col-xs-3 col-sm-3">
+                    <?=
+                    $form->field($model, "scenario_id")->widget(Select2::classname(), [
+                        "data" => Scenario::getSelectMap(),
+                        "options" => ["multiple"=>false],
+                        "pluginOptions" => [
+                            "allowClear" => false
+                        ],
+                    ]);
+                    ?>
+                </div>
+                <div class="col-md-2 col-lg-2 col-xs-2 col-sm-2">
+                    <div class="form-group">
+                        <label class="control-label">&nbsp;</label>
+                        <?= Html::submitButton('<i class="fa fa-pencil"></i> '.Yii::t('yii', 'Update'), ['class' => 'btn btn-default btn-flat form-control']) ?>
                     </div>
                 </div>
+                <?php ActiveForm::end(); ?>
+
             <?php } ?>
         </div>
     </div>

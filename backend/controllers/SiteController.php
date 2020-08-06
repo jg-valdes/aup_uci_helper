@@ -35,6 +35,11 @@ class SiteController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    [
+                        'actions' => ['index', 'predictor', 'error','change_lang','info_test'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
                 ],
             ],
             'verbs' => [
@@ -67,10 +72,11 @@ class SiteController extends Controller
     {
         $knn = [];
         $k = 5;
+        $model = new IaCase(['status'=>IaCase::STATUS_ACTIVE]);
+
         if(Yii::$app->request->isPost){
             $formItems = Yii::$app->request->post();
             $k = Yii::$app->request->post('k_delimiter', $k);
-            $model = new IaCase(['status'=>IaCase::STATUS_ACTIVE]);
             $model->save();
             foreach ($formItems as $key=>$value){
                 $metricId = explode("_", $key);
@@ -138,7 +144,8 @@ class SiteController extends Controller
         return $this->render('predictor', [
             'metrics' => Metric::findAll(['status'=>Metric::STATUS_ACTIVE]),
             'knn' => $knn,
-            'k_delimiter' => $k
+            'k_delimiter' => $k,
+            'model'=>$model
         ]);
     }
 

@@ -16,7 +16,7 @@ use backend\models\business\Scenario;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $controllerId = '/'.$this->context->uniqueId.'/';
-$this->title = Yii::t('backend', 'Ia Cases');
+$this->title = Yii::t('backend', 'Base de Casos');
 $this->params['breadcrumbs'][] = $this->title;
 
 $create_button='';

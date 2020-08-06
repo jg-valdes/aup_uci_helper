@@ -125,18 +125,18 @@ class IaCaseController extends Controller
                     {
                         $transaction->commit();
 
-                        GlobalFunctions::addFlashMessage('success',Yii::t('backend','Elemento actualizado correctamente'));
+                        GlobalFunctions::addFlashMessage('success',Yii::t('backend','Predicción actualizada correctamente'));
 
-                        return $this->redirect(['index']);
+                        return $this->redirect(['/site/index']);
                     }
                     else
                     {
-                        GlobalFunctions::addFlashMessage('danger',Yii::t('backend','Error actualizando el elemento'));
+                        GlobalFunctions::addFlashMessage('danger',Yii::t('backend','Error actualizando la predicción'));
                     }
                 }
                 catch (Exception $e)
                 {
-                    GlobalFunctions::addFlashMessage('danger',Yii::t('backend','Error, ha ocurrido una excepción actualizando el elemento'));
+                    GlobalFunctions::addFlashMessage('danger',Yii::t('backend','Error, ha ocurrido una excepción actualizando la predicción'));
                     $transaction->rollBack();
                 }
             }

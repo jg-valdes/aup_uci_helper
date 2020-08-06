@@ -117,7 +117,7 @@ $return_url = Url::current();
                         </ul>
                     </li>
                 <?php } ?>
-
+                <?php if(!Yii::$app->user->isGuest) { ?>
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="<?= User::getUrlAvatarByActiveUser() ?>" class="user-image" />
@@ -152,6 +152,12 @@ $return_url = Url::current();
                         </li>
                     </ul>
                 </li>
+                <?php } else { ?>
+                    <li>
+                        <?= Html::a('<i class="fa fa-sign-in"></i>', ['/security/user/login']); ?>
+                    </li>
+
+                <?php } ?>
             </ul>
         </div>
     </nav>
