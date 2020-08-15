@@ -1,7 +1,11 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\business\Artifact;
+use backend\models\business\Discipline;
+use backend\models\business\Process;
 use backend\models\business\Scenario;
+use backend\models\business\ScenarioArtifact;
 use backend\models\knn\CaseMetric;
 use backend\models\knn\IaCase;
 use backend\models\knn\Metric;
@@ -65,7 +69,46 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $scenarios = Scenario::find()->where(['status'=>Scenario::STATUS_ACTIVE])->orderBy('name')->all();
+        $disciplines = Discipline::find()->where(['status'=>Discipline::STATUS_ACTIVE])->orderBy('order')->all();
+        $tree = [];
+
+        foreach ($scenarios as $scenario){
+            $treeChild=[];
+            $treeChild['scenario'] = ['id'=>$scenario->id, 'name' => $scenario->name, 'description'=>$scenario->description];
+            $scenarioDisciplines = [];
+            foreach ($disciplines as $discipline){
+                $scenarioDiscipline = ['id'=>$discipline->id, 'name'=>$discipline->name, 'description'=> $discipline->description];
+
+                // Search for Discipline -> Process
+                $disciplineProcesses = [];
+                $processes = $discipline->getProcesses()->where(['status'=>Process::STATUS_ACTIVE])->orderBy('order')->all();
+                foreach ($processes as $process){
+                    $disciplineProcess = ['id'=>$process->id, 'name'=>$process->name, 'description'=> $process->description];
+
+                    // Search for Process -> Artifact (using Scenario)
+                    $processArtifacts = [];
+                    $artifacts = $process->getArtifacts()->where(['status'=>Artifact::STATUS_ACTIVE])->orderBy('order')->all();
+                    foreach ($artifacts as $artifact){
+                        if(ScenarioArtifact::existRelation($scenario->id, $artifact->id)){
+                            $processArtifact = ['id'=>$artifact->id, 'name'=>$artifact->name, 'description'=> $artifact->description];
+                            array_push($processArtifacts, $processArtifact);
+                        }
+                    }
+
+                    $disciplineProcess['artifacts'] = $processArtifacts;
+                    array_push($disciplineProcesses, $disciplineProcess);
+                }
+                $scenarioDiscipline['processes'] = $disciplineProcesses;
+                array_push($scenarioDisciplines, $scenarioDiscipline);
+            }
+
+            $treeChild['scenario']['disciplines'] = $scenarioDisciplines;
+            array_push($tree, $treeChild);
+        }
+        //var_dump($tree);exit(0);
+
+        return $this->render('index', ['tree'=>$tree]);
     }
 
     public function actionPredictor()

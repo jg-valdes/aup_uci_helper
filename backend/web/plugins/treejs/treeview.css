@@ -21,7 +21,7 @@ a:not([href]):not([tabindex]), a:not([href]):not([tabindex]):focus, a:not([href]
 
 .treeview-animated ul {
     position: relative;
-    padding-left: 1em;
+    padding-left: 0.6em;
     list-style: none;
 }
 

@@ -117,7 +117,8 @@ $custom_elements_gridview->setActionColumn($my_custom_action_column);
 					'value'=> function($model){ return $model->getProcessLink();},
 					'filterInputOptions'=>['placeholder'=> '------'],
 					'hAlign'=>'center',
-					'width'=> '15%'
+					'width'=> '15%',
+					'group' => true
 				],
 
                 [
