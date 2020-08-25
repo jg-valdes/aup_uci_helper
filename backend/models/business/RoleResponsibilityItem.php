@@ -8,6 +8,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use common\models\GlobalFunctions;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 
 /**
@@ -302,6 +303,26 @@ class RoleResponsibilityItem extends BaseModel
             return $this->description;
         }
         return GlobalFunctions::getNoValueSpan();
+    }
+
+    public function getModelAsJson($includeRoleResponsibility = false)
+    {
+        $json = [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'has_resource' => $this->hasResource(),
+            'resource' => Url::to(['/role-responsibility-item/download', 'id'=>$this->id]),
+            'views' => $this->views,
+            'downloads' => $this->downloads,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+        if($includeRoleResponsibility){
+            $json['role_responsibility'] = $this->roleResponsibility->getModelAsJson();
+        }
+
+        return $json;
     }
 
 }

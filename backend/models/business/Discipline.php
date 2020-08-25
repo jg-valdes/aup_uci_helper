@@ -128,4 +128,26 @@ class Discipline extends BaseModel
         }
         return GlobalFunctions::getNoValueSpan();
     }
+
+    public function getModelAsJson($includeProcess = false, $includeArtifacts = false)
+    {
+        $json = [
+            'id' => $this->id,
+            'name' => $this->name,
+            'alias' => isset($this->alias) && !empty($this->alias)? $this->alias : "",
+            'description' => $this->description,
+            'views' => $this->views,
+            'order' => $this->order,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+        if($includeProcess){
+            $processes = [];
+            foreach ($this->processes as $process){
+                array_push($processes, $process->getModelAsJson($includeArtifacts));
+            }
+            $json['processes'] = $processes;
+        }
+        return $json;
+    }
 }

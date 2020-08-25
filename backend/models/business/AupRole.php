@@ -115,4 +115,23 @@ class AupRole extends BaseModel
         }
         return GlobalFunctions::getNoValueSpan();
     }
+
+    public function getModelAsJson($includeRoleResponsibilities = false)
+    {
+        $json = [
+            'id' => $this->id,
+            'name' => $this->name,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+        if($includeRoleResponsibilities){
+            $responsibilities = [];
+            foreach ($this->roleResponsibilities as $responsibility){
+                array_push($responsibilities, $responsibility->getModelAsJson());
+            }
+            $json['responsibilities'] = $responsibilities;
+        }
+
+        return $json;
+    }
 }

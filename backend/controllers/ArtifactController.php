@@ -6,15 +6,14 @@ use backend\models\business\ArtifactResponsibilityItem;
 use backend\models\business\RoleResponsibilityItem;
 use backend\models\business\Scenario;
 use backend\models\business\ScenarioArtifact;
+use yii\filters\AccessControl;
 use Yii;
 use backend\models\business\Artifact;
 use backend\models\business\ArtifactSearch;
-use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\models\GlobalFunctions;
-use yii\helpers\Url;
 use yii\db\Exception;
 use yii\web\Response;
 
@@ -29,6 +28,16 @@ class ArtifactController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['download'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

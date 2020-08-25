@@ -170,4 +170,27 @@ class Process extends BaseModel
         }
         return GlobalFunctions::getNoValueSpan();
     }
+
+    public function getModelAsJson($includeArtifacts = false)
+    {
+        $json = [
+            'id' => $this->id,
+            'name' => $this->name,
+            'alias' => isset($this->alias) && !empty($this->alias)? $this->alias : "",
+            'description' => $this->description,
+            'discipline' => isset($this->discipline)? $this->discipline->getModelAsJson() : [],
+            'views' => $this->views,
+            'order' => $this->order,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+        if($includeArtifacts){
+            $artifacts = [];
+            foreach ($this->artifacts as $artifact){
+                array_push($artifacts, $artifact->getModelAsJson());
+            }
+            $json['artifacts'] = $artifacts;
+        }
+        return $json;
+    }
 }

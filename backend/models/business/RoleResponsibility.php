@@ -114,4 +114,18 @@ class RoleResponsibility extends BaseModel
 
     /** :::::::::::: END > Abstract Methods and Overrides ::::::::::::*/
 
+    public function getModelAsJson($includeRole = false)
+    {
+        $json = [
+            'id' => $this->id,
+            'name' => $this->name,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+        if($includeRole){
+            $json['role'] = $this->aupRole->getModelAsJson();
+        }
+
+        return $json;
+    }
 }

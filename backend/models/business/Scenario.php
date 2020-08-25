@@ -146,4 +146,25 @@ class Scenario extends BaseModel
 
         return implode(" ", $artifactsLink);
     }
+
+
+    public function getModelAsJson($includeArtifacts = false)
+    {
+        $json = [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'views' => $this->views,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+        if($includeArtifacts){
+            $artifacts = [];
+            foreach ($this->scenarioArtifacts as $relation){
+                array_push($artifacts, $relation->artifact->getModelAsJson());
+            }
+            $json['artifacts'] = $artifacts;
+        }
+        return $json;
+    }
 }

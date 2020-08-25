@@ -10,10 +10,9 @@ use backend\models\knn\CaseMetric;
 use backend\models\knn\IaCase;
 use backend\models\knn\Metric;
 use backend\models\knn\MetricItem;
-use common\models\GlobalFunctions;
-use machour\yii2\notifications\models\Notification;
 use Yii;
 use yii\helpers\FileHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -91,7 +90,12 @@ class SiteController extends Controller
                     $artifacts = $process->getArtifacts()->where(['status'=>Artifact::STATUS_ACTIVE])->orderBy('order')->all();
                     foreach ($artifacts as $artifact){
                         if(ScenarioArtifact::existRelation($scenario->id, $artifact->id)){
-                            $processArtifact = ['id'=>$artifact->id, 'name'=>$artifact->name, 'description'=> $artifact->description];
+                            $processArtifact = [
+                                'id'=>$artifact->id,
+                                'api_url' => Url::to(['/v1/artifact/view', 'id'=>$artifact->id]),
+                                'name'=>$artifact->name,
+                                'description'=> $artifact->description
+                            ];
                             array_push($processArtifacts, $processArtifact);
                         }
                     }
