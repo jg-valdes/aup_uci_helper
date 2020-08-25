@@ -136,7 +136,7 @@ class Discipline extends BaseModel
             'name' => $this->name,
             'alias' => isset($this->alias) && !empty($this->alias)? $this->alias : "",
             'description' => $this->description,
-            'views' => $this->views,
+            'views' => GlobalFunctions::getFormattedViewsCount($this->views),
             'order' => $this->order,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

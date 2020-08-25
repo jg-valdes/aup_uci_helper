@@ -154,7 +154,7 @@ class Scenario extends BaseModel
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'views' => $this->views,
+            'views' => GlobalFunctions::getFormattedViewsCount($this->views),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

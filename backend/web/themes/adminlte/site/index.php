@@ -9,6 +9,43 @@ use common\models\User;
 
 $this->title = Setting::getName();
 
+$css = <<<CSS
+.just-padding {
+    padding: 15px;
+}
+
+.list-group.list-group-root {
+    padding: 0;
+    overflow: hidden;
+}
+
+.list-group.list-group-root .list-group {
+    margin-bottom: 0;
+}
+
+.list-group.list-group-root .list-group-item {
+    border-radius: 0;
+    border-width: 1px 0 0 0;
+}
+
+.list-group.list-group-root > .list-group-item:first-child {
+    border-top-width: 0;
+}
+
+.list-group.list-group-root > .list-group > .list-group-item {
+    padding-left: 30px;
+}
+
+.list-group.list-group-root > .list-group > .list-group > .list-group-item {
+    padding-left: 45px;
+}
+
+.list-group-item .glyphicon {
+    margin-right: 5px;
+}
+CSS;
+
+$this->registerCss($css);
 ?>
 
     <div class="site-index">
@@ -80,6 +117,9 @@ $this->title = Setting::getName();
                     </ul>
                 </div>
             </div>
+            <div id="artifact_container" class="col-md-8 col-xl-8 col-lg-8 col-sm-12 col-xs-12">
+
+            </div>
         </div>
     </div>
 
@@ -98,7 +138,13 @@ $js = <<<JS
                     type: 'GET',
                     url: apiUrl
                 }).done(function(data){
-                    console.log(data);
+                    $('#artifact_container').html(data);
+                    
+                    $('.list-group-item').on('click', function() {
+                        $('.glyphicon', this)
+                          .toggleClass('glyphicon-chevron-right')
+                          .toggleClass('glyphicon-chevron-down');
+                    });
                 });
             }
             

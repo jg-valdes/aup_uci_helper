@@ -2,6 +2,7 @@
 
 namespace backend\modules\v1\models;
 
+use common\models\GlobalFunctions;
 use Yii;
 use yii\helpers\Url;
 use backend\models\business\Artifact;
@@ -37,10 +38,10 @@ class ArtifactModel extends Artifact
                 return $model->order;
             },
             'views' => function(Artifact $model){
-                return $model->views;
+                return GlobalFunctions::getFormattedViewsCount($model->views);
             },
             'downloads' => function(Artifact $model){
-                return $model->downloads;
+                return GlobalFunctions::getFormattedDownsCount($model->downloads);
             },
             'process' => function(Artifact $model){
                 return $model->process->getModelAsJson();

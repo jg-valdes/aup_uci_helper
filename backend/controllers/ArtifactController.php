@@ -34,7 +34,12 @@ class ArtifactController extends Controller
                     [
                         'actions' => ['download'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        'roles' => ['?', '@'],
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'multiple_delete', 'get-last-order'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
             ],

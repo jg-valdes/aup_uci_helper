@@ -33,7 +33,12 @@ class RoleResponsibilityItemController extends Controller
                     [
                         'actions' => ['download'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        'roles' => ['?', '@'],
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'multiple_delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
             ],

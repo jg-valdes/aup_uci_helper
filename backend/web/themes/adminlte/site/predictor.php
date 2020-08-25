@@ -42,7 +42,7 @@ $this->registerCssFile("@web/plugins/custom.quiz/custom.quiz.css");
             <?php ActiveForm::begin(['options' => ['id' => 'quiz-form', 'class' => 'hidden']]);
                   ActiveForm::end();
             }else{ ?>
-                    <h5><?= Yii::t("backend", "El sistema recomienda el siguiente escenario"); ?>: <?= $model->scenario0->name;?> <a href="<?= Url::to(['/scenario/view', 'id'=>$model->scenario_id]); ?>" class="small-box-footer">
+                    <h5><?= Yii::t("backend", "El sistema recomienda el siguiente escenario"); ?>: <?= $model->scenario0->name;?> <a href="<?= Url::to(['/site/index']); ?>" class="small-box-footer">
                             (<?= Yii::t("backend", "Ver documentación") ?>)
                             </a>.</h5>
 

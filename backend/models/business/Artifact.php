@@ -356,8 +356,8 @@ class Artifact extends BaseModel
             'has_resource' => $this->hasResource(),
             'resource' => $this->hasResource()? Url::to(['/artifact/download', 'id'=>$this->id]): "",
             'order' => $this->order,
-            'views' => $this->views,
-            'downloads' => $this->downloads,
+            'views' => GlobalFunctions::getFormattedViewsCount($this->views),
+            'downloads' => GlobalFunctions::getFormattedDownsCount($this->downloads),
             'process' => $this->process->getModelAsJson(),
             'scenarios' => $this->getScenariosAsJson(),
             'roles' => $this->getRolesAsJson(),
@@ -379,27 +379,31 @@ class Artifact extends BaseModel
     {
         $roles = [];
         $roleIDs = [];
-
+        $itemIds = [];
         foreach ($this->artifactResponsibilityItems as $relation){
+
             $responsibilityId = $relation->roleResponsibilityItem->role_responsibility_id;
             $roleId = $relation->roleResponsibilityItem->roleResponsibility->aup_role_id;
             if(!in_array($roleId, $roleIDs)){
                 array_push($roleIDs, $roleId);
             }
+            if(!in_array($relation->role_responsibility_item_id, $itemIds)){
+                array_push($itemIds, $relation->role_responsibility_item_id);
+                if(!isset($roles[$roleId])){
+                    $roles[$roleId] = [];
+                }
 
-            if(!isset($roles[$roleId])){
-                $roles[$roleId] = [];
+                if(!isset($roles[$roleId]['responsibilities'])){
+                    $roles[$roleId]['responsibilities'] = [];
+                }
+
+                if(!isset($roles[$roleId]['responsibilities'][$responsibilityId])){
+                    $roles[$roleId]['responsibilities'][$responsibilityId] = [];
+                }
+
+                array_push($roles[$roleId]['responsibilities'][$responsibilityId], $relation->roleResponsibilityItem->getModelAsJson());
             }
 
-            if(!isset($roles[$roleId]['responsibilities'])){
-                $roles[$roleId]['responsibilities'] = [];
-            }
-
-            if(!isset($roles[$roleId]['responsibilities'][$responsibilityId])){
-                $roles[$roleId]['responsibilities'][$responsibilityId] = [];
-            }
-
-            array_push($roles[$roleId]['responsibilities'][$responsibilityId], $relation->roleResponsibilityItem->getModelAsJson());
         }
 
         $result = [];

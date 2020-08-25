@@ -313,8 +313,8 @@ class RoleResponsibilityItem extends BaseModel
             'description' => $this->description,
             'has_resource' => $this->hasResource(),
             'resource' => Url::to(['/role-responsibility-item/download', 'id'=>$this->id]),
-            'views' => $this->views,
-            'downloads' => $this->downloads,
+            'views' => GlobalFunctions::getFormattedViewsCount($this->views),
+            'downloads' => GlobalFunctions::getFormattedDownsCount($this->downloads),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -33,13 +33,13 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['logout', 'index',
+                        'actions' => ['logout', 'index', 'artifact',
                             'predictor', 'error','change_lang', "ckeditorupload",'info_test'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['index', 'predictor', 'error','change_lang','info_test'],
+                        'actions' => ['index', 'predictor', 'artifact', 'error','change_lang','info_test'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -92,7 +92,7 @@ class SiteController extends Controller
                         if(ScenarioArtifact::existRelation($scenario->id, $artifact->id)){
                             $processArtifact = [
                                 'id'=>$artifact->id,
-                                'api_url' => Url::to(['/v1/artifact/view', 'id'=>$artifact->id]),
+                                'api_url' => Url::to(['/site/artifact', 'id'=>$artifact->id]),
                                 'name'=>$artifact->name,
                                 'description'=> $artifact->description
                             ];
@@ -196,6 +196,18 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionArtifact($id)
+    {
+        $model = Artifact::findOne($id);
+        if($model){
+            if(Yii::$app->user->isGuest){
+                $model->updateAttributes(['views'=>$model->views+1]);
+            }
+            return $this->renderPartial("_artifact_details", ['model'=>$model]);
+        }else{
+            return $this->renderPartial("error", ['name'=>"No encontrado", "message"=>"Artefacto no encontrado"]);
+        }
+    }
 
     /**
      * Logout action.

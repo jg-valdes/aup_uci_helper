@@ -179,7 +179,7 @@ class Process extends BaseModel
             'alias' => isset($this->alias) && !empty($this->alias)? $this->alias : "",
             'description' => $this->description,
             'discipline' => isset($this->discipline)? $this->discipline->getModelAsJson() : [],
-            'views' => $this->views,
+            'views' => GlobalFunctions::getFormattedViewsCount($this->views),
             'order' => $this->order,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
