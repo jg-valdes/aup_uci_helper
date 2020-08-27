@@ -1,18 +1,16 @@
-# AUP vUCI, Sistema de apoyo al desarrollo de software en la UCI
+# AUP-UCI, Sistema de apoyo al desarrollo de software en la UCI
 
 /*------------------------------------------------------------------*/
 
 Tecnologías base del proyecto:
-* Yii 2.0.18
-* XAMPP 7.0.28(PHP, MySQL)
+* Yii 2.0.35
+* XAMPP 7.4.7(PHP, MySQL)
 * La plantilla del backend es AdminLTE.
-* La extensión para RBAC es "webvimark/user-management"
 
 /*------------------------------------------------------------------*/
 
 La primera vez y con el objetivo de la carga inicial de la BD se debe ejecutar el comando:
 ```
-yii migrate --migrationPath=vendor/webvimark/module-user-management/migrations
 yii migrate
 ```
 
@@ -70,19 +68,3 @@ Configuración el virtual host del XAMPP:
    	127.0.0.1       www.aup-helper.uci.cu.local
 ```
 
-Cronjob para publicar noticias cada día a las 6 am
--------------------
-Configurar en el fichero common/config/main-local el controllerMap agregando la entrada siguiente:
-```
-'controllerMap' => [
-        'console' => [
-            'class' => 'console\controllers\ConsoleController',
-        ],
-```
-
-Abrir editor cronjob en la terminal y registrar las tareas programadas de la siguiente manera como ejemplo 
-```
-cronjob -e
-
-0 6 * * * php /path/to/aup_uci_manager/yii console/action_cronjob
-```
