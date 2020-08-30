@@ -68,5 +68,6 @@ backend/web/uploads/*
 
 # Keep avatar default
 !backend/web/uploads/avatars/avatar_default.jpg
-!backend/web/uploads/flags/*
+!backend/web/uploads/flags/fh7Vv8mukRdvp5qQLgfIQrcM6GMSvfeg.svg
+!backend/web/uploads/flags/O15f8QV2eIskm0tx87ABQ1h_fqKilnIY.svg
 !*.gitkeep

@@ -9,10 +9,25 @@ Tecnologías base del proyecto:
 
 /*------------------------------------------------------------------*/
 
-La primera vez y con el objetivo de la carga inicial de la BD se debe ejecutar el comando:
+### Pre-requisitos
+
+Asegúrese de tener instalado el siguiente componente de forma global:
 ```
-yii migrate
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
+
+### Siga los siguientes pasos
+
+*Nota: Para usar los siguientes comandos debe estar ubicada la consola en la raíz del proyecto*
+
+1. Corra `composer install -vvv` para instalar las extensiones dle proyecto
+
+2. Inicialice las configuraciones corriendo el comando `php init`, entonces seleccione el entorno que generará los ficheros de configuración para desarrollo o producción
+
+3. Corrija de ser necesarrio las credenciales para el acceso a la base de datos en el fichero `common/config/main-local.php`
+
+4. Corra las migraciones dle sistema `php yii migrate`
+
 
 **NOTA:** Con la ejecución del comando se crean las tablas básicas y se puede acceder al backend con usuario y contraseña "superadmin"
 
