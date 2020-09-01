@@ -3,7 +3,7 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=api_cocoleads_db',
+            'dsn' => 'mysql:host=localhost;dbname=prod_aup_uci_database',
             'username' => 'root',
             'password' => '',
             'charset' => 'utf8',

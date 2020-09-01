@@ -3,7 +3,7 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=127.0.0.1;dbname=aup_uci_predictor',
+            'dsn' => 'mysql:host=127.0.0.1;dbname=aup_uci_helper',
             'username' => 'root',
             'password' => '',
             'charset' => 'utf8',
